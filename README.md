@@ -1,113 +1,61 @@
-# Mad.co 360° Spatial Real Estate Platform (`madco.in`)
+# Madco Estates — Phase 3: 360° Tour Engine Build
 
-> *"Walk through your next home before you ever step inside it."*
+Welcome to **Madco Estates**, a Next.js 15 + Supabase real estate platform featuring an immersive 360° virtual walkthrough engine.
 
-Production-ready, immersive 360° virtual walkthrough platform engineered as an extension of **Mad.co Studio** ([madco.in](https://madco.in)) for Mangalore, Karnataka.
+## 🚀 Tour Engine Features
 
----
-
-## 🌐 Hosting & Deployment Architecture
-
-The application is built with **Next.js App Router** and designed for seamless deployment to **Vercel** under the existing `madco.in` domain.
-
-### Option 1: Subdomain Deployment (PREFERRED — Clean SEO & Independent Builds)
-Deploy the standalone Next.js app on Vercel and serve it at **`https://estates.madco.in`**.
-
-#### DNS & Vercel Setup (Step-by-Step)
-1. **Connect Domain in Vercel**:
-   - Open your project settings in the Vercel Dashboard -> **Domains**.
-   - Add `estates.madco.in` as a domain.
-2. **Configure DNS Records** (at your DNS provider, e.g. Cloudflare / GoDaddy / Namecheap for `madco.in`):
-   ```ini
-   Type: CNAME
-   Name: estates
-   Target: cname.vercel-dns.com
-   TTL: Auto / 3600
-   ```
-3. **Vercel Environment Variables**:
-   ```ini
-   NEXT_PUBLIC_SITE_URL=https://estates.madco.in
-   NEXT_PUBLIC_BASE_PATH=
-   ```
+- **Media Pipeline**: Client/server 2:1 equirectangular panorama image validation, EXIF/GPS metadata privacy scrubbing, and 4-tier progressive WebP image generation (`preview` [512px], `low` [2048px], `med` [4096px], `high` [8192px]) stored on **Vercel Blob**.
+- **Photo Sphere Viewer v5 Integration**: Built with `@photo-sphere-viewer/core`, `virtual-tour-plugin`, `gyroscope-plugin`, and `markers-plugin`.
+- **Fullscreen Tour Route (`/property/[slug]/tour`)**: Dedicated 360° virtual tour page featuring sticky glassmorphic header, listing details, exit button, and mobile contact overlay.
+- **Admin Tour Builder (`/admin/tour-builder`)**: Interactive admin dashboard for uploading panoramas, placing hotspot markers directly by clicking coordinates inside the 360° sphere, linking rooms/scenes, and publishing tours.
+- **Inline Tour Embed**: Embedded 360° walkthrough widget on property detail pages (`/property/[slug]`) with card-to-tour transition animations.
+- **Analytics & Event Tracking**: Automatic event logging to the `events` table for `tour_open`, `scene_change`, and inside-tour enquiries.
 
 ---
 
-### Option 2: Reverse Proxy Subpath Fallback (`https://madco.in/estates`)
-If the domain owner prefers serving the app under a subpath (`madco.in/estates`), configure Vercel rewrites in the main `madco.in` repository while deploying this repository to `estates.madco.in` (or a Vercel project).
+## 🛠️ Tech Stack & Dependencies
 
-#### A. Configure Main `madco.in` Site (`next.config.js` or `vercel.json`)
-Add a rewrite rule to your main `madco.in` site so requests to `/estates` and `/estates/:path*` proxy to the estates Vercel deployment:
+- **Framework**: Next.js 15 (App Router, Turbopack)
+- **Database**: Supabase Postgres (`tours`, `tour_scenes`, `tour_hotspots`, `events`, `blob_files`)
+- **Panorama Storage**: Vercel Blob (`@vercel/blob`)
+- **Image Processing**: `sharp`
+- **360° Viewer**: Photo Sphere Viewer v5
+- **Styling**: Tailwind CSS + Glassmorphism + Madco Design Tokens (`estate-ink`, `brass`, `fern`, `haze`)
 
-**Using `next.config.js` in Main `madco.in` Site:**
-```javascript
-// next.config.js in main madco.in repository
-module.exports = {
-  async rewrites() {
-    return [
-      {
-        source: '/estates',
-        destination: 'https://estates.madco.in/estates',
-      },
-      {
-        source: '/estates/:path*',
-        destination: 'https://estates.madco.in/estates/:path*',
-      },
-    ];
-  },
-};
-```
+---
 
-**Using `vercel.json` in Main `madco.in` Site:**
-```json
-{
-  "rewrites": [
-    {
-      "source": "/estates",
-      "destination": "https://estates.madco.in/estates"
-    },
-    {
-      "source": "/estates/:path*",
-      "destination": "https://estates.madco.in/estates/:path*"
-    }
-  ]
-}
-```
+## 📍 Key Routes
 
-#### B. Configure Environment Variables for Subpath Deployment
-Set the following environment variables in Vercel for the Estates project:
-```ini
-NEXT_PUBLIC_SITE_URL=https://madco.in/estates
-NEXT_PUBLIC_BASE_PATH=/estates
+- `/`: Home Page & Feature Showcase
+- `/property/luxury-2bhk-penthouse`: Property Detail Page with Inline 360° Embed
+- `/property/luxury-2bhk-penthouse/tour`: Fullscreen 360° Virtual Walkthrough
+- `/admin/tour-builder`: Admin Tour Builder Dashboard & Hotspot Editor
+
+---
+
+## ⚙️ Environment Configuration
+
+Add your Vercel Blob and Supabase credentials to `.env.local`:
+
+```env
+BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ---
 
-## 🛠️ Environment Variables Reference
+## 🗄️ Database Setup & Migrations
 
-| Variable Name | Subdomain Example (`estates.madco.in`) | Subpath Example (`madco.in/estates`) | Description |
-| :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_SITE_URL` | `https://estates.madco.in` | `https://madco.in/estates` | Canonical base URL for SEO, Open Graph & sitemaps |
-| `NEXT_PUBLIC_BASE_PATH` | *(leave empty)* | `/estates` | Next.js subpath prefix for asset routing |
-
----
-
-## 📲 Official Contact & Links
-- **Agency Main Website**: [https://madco.in](https://madco.in)
-- **Mad.co Studio WhatsApp**: [https://wa.me/918762640420](https://wa.me/918762640420)
-- **Agency Backlink**: Featured in footer as *"A Mad.co Studio product"*.
+Run the SQL migration script located in:
+- [20260803_phase3_tour_engine.sql](file:///c:/Users/Romeo/Documents/Madco%20Estates/supabase/migrations/20260803_phase3_tour_engine.sql)
+- [seed.sql](file:///c:/Users/Romeo/Documents/Madco%20Estates/supabase/seed.sql)
 
 ---
 
-## 🚀 Local Development & Build Commands
+## 🧪 Testing
 
+Run the media pipeline unit tests:
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Run local Next.js dev server (http://localhost:3000)
-npm run dev
-
-# 3. Test production build
-npm run build
-npm run start
+node scripts/test-panorama-pipeline.js
 ```
