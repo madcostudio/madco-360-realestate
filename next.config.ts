@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["sharp"],
   images: {
     remotePatterns: [
       {
@@ -12,10 +13,6 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-  },
-  webpack: (config) => {
-    config.externals = [...(config.externals || []), { sharp: "commonjs sharp" }];
-    return config;
   },
 };
 

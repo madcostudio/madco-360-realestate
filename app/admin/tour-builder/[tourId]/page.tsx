@@ -2,7 +2,6 @@
 
 import { useState, use } from 'react';
 import { TourViewer, SceneData, HotspotData } from '@/components/tour-viewer';
-import { processPanorama } from '@/lib/panorama-pipeline';
 import { DEMO_TOUR, TourData } from '@/lib/mock-data';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
@@ -45,7 +44,7 @@ export default function TourBuilder({ params }: TourBuilderProps) {
   const [hotspotBody, setHotspotBody] = useState('');
   const [hotspotTargetSceneId, setHotspotTargetSceneId] = useState('');
 
-  // Handle panorama image upload & client processing
+  // Handle panorama image upload & server processing
   const handleUploadScene = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -55,7 +54,22 @@ export default function TourBuilder({ params }: TourBuilderProps) {
 
     try {
       const sceneId = crypto.randomUUID();
-      const levels = await processPanorama(file, tourId, sceneId);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('tourId', tourId);
+      formData.append('sceneId', sceneId);
+
+      const res = await fetch('/api/admin/process-panorama', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to process panorama image.');
+      }
+
+      const { levels } = await res.json();
 
       const newScene: SceneData = {
         id: sceneId,
