@@ -1,25 +1,36 @@
 import { MetadataRoute } from 'next';
-import { DEMO_PROPERTIES_LIST } from '@/lib/mock-data';
+import { getPublishedProperties } from '@/lib/supabase/queries';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://madcoestates.com';
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://estates.madco.in';
 
-  const propertyEntries = DEMO_PROPERTIES_LIST.map((prop) => ({
+  let properties: Array<{ slug: string; updated_at?: string; city?: string }> = [];
+  try {
+    properties = await getPublishedProperties();
+  } catch (err) {
+    console.warn('Sitemap query error:', err);
+  }
+
+  const propertyEntries = properties.map((prop) => ({
     url: `${baseUrl}/property/${prop.slug}`,
-    lastModified: new Date(),
+    lastModified: prop.updated_at ? new Date(prop.updated_at) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
 
-  const tourEntries = DEMO_PROPERTIES_LIST.map((prop) => ({
+  const tourEntries = properties.map((prop) => ({
     url: `${baseUrl}/property/${prop.slug}/tour`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
 
-  const cityEntries = ['mumbai', 'bengaluru', 'delhi', 'hyderabad'].map((city) => ({
-    url: `${baseUrl}/homes-in-${city}`,
+  const distinctCities = Array.from(
+    new Set(properties.map((p) => (p.city || '').toLowerCase().trim()).filter(Boolean))
+  );
+
+  const cityEntries = distinctCities.map((city) => ({
+    url: `${baseUrl}/homes-in-${encodeURIComponent(city)}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
     priority: 0.7,
@@ -43,3 +54,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...tourEntries,
   ];
 }
+

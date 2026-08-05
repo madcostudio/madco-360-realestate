@@ -1,5 +1,16 @@
-import { createClient as createClientBrowser } from './client';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export function createClient() {
-  return createClientBrowser();
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn('Supabase URL or Server Key is missing in environment variables.');
+  }
+  return createSupabaseClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 }

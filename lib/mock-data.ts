@@ -42,7 +42,8 @@ export interface PropertyData {
   bhk: number;
   address: string;
   city: string;
-  status: 'draft' | 'published' | 'pending';
+  locality?: string;
+  status: 'draft' | 'published' | 'pending' | 'rejected';
   cover_image: string;
   tour_id: string;
   description?: string;

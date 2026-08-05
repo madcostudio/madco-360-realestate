@@ -1,6 +1,6 @@
 import { TourViewer } from '@/components/tour-viewer';
-import { createClient } from '@/lib/supabase/server';
-import { DEMO_PROPERTY, DEMO_TOUR, PropertyData } from '@/lib/mock-data';
+import { getPropertyBySlug, getTourById } from '@/lib/supabase/queries';
+import { PropertyData, TourData, DEMO_TOUR } from '@/lib/mock-data';
 import { trackEvent } from '@/lib/events';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -13,30 +13,15 @@ interface TourPageProps {
 
 export default async function TourPage({ params }: TourPageProps) {
   const { slug } = await params;
-  const supabase = createClient();
 
-  const { data: property } = await supabase
-    .from('properties')
-    .select('id, title, price, bhk, tour_id, address, slug')
-    .eq('slug', slug)
-    .single();
+  const property = await getPropertyBySlug(slug);
 
-  const activeProperty: PropertyData = property || (slug === DEMO_PROPERTY.slug ? DEMO_PROPERTY : DEMO_PROPERTY);
-
-  if (!activeProperty) {
+  if (!property) {
     notFound();
   }
 
-  const { data: tour } = await supabase
-    .from('tours')
-    .select(`
-      id, start_scene_id, status,
-      tour_scenes(id, name, sort_order, pano_levels, initial_yaw, initial_pitch),
-      tour_hotspots(id, scene_id, type, yaw, pitch, target_scene_id, title, body)
-    `)
-    .eq('id', activeProperty.tour_id)
-    .single();
-
+  const activeProperty: PropertyData = property;
+  const tour = activeProperty.tour_id ? await getTourById(activeProperty.tour_id) : DEMO_TOUR;
   const activeTour = tour || DEMO_TOUR;
 
   // Log tour_open event

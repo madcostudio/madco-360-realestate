@@ -4,12 +4,12 @@ import { LiveDemoSpotlight } from '@/components/live-demo-spotlight';
 import { WhyMadcoSection } from '@/components/why-madco-section';
 import { MangaloreNeighborhoodsSection } from '@/components/mangalore-neighborhoods-section';
 import { OwnerCtaBand } from '@/components/owner-cta-band';
-import { DEMO_PROPERTIES_LIST } from '@/lib/mock-data';
+import { getFeaturedProperties } from '@/lib/supabase/queries';
 import { Compass, ArrowRight, MapPin, Sparkles, ShieldCheck } from 'lucide-react';
 import { PropertyCard } from '@/components/property-card';
 
-export default function HomePage() {
-  const publishedProperties = DEMO_PROPERTIES_LIST.filter((p) => p.status === 'published');
+export default async function HomePage() {
+  const featuredProperties = await getFeaturedProperties();
 
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi">
@@ -23,7 +23,7 @@ export default function HomePage() {
           {/* Gold Pill Badge */}
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-bold font-mono uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>MAD.CO STUDIO • MANGALORE 360° REAL ESTATE MARKETPLACE</span>
+            <span>MAD.CO ESTATES • 360° VERIFIED REAL ESTATE MARKETPLACE</span>
           </div>
 
           {/* Solid Color Headline (Approved Single Solid Color Fix) */}
@@ -97,7 +97,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {publishedProperties.map((property) => (
+          {featuredProperties.map((property) => (
             <PropertyCard key={property.id} property={property} imageHeight="h-64 sm:h-72" />
           ))}
         </div>

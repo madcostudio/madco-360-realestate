@@ -1,16 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TourViewer } from './tour-viewer';
-import { DEMO_PROPERTY, DEMO_TOUR } from '@/lib/mock-data';
+import { getTourById } from '@/lib/supabase/queries';
+import { DEMO_PROPERTY, DEMO_TOUR, TourData } from '@/lib/mock-data';
 import { Compass, Sparkles, Maximize2, Layers, Eye } from 'lucide-react';
 
 export function LiveDemoSpotlight() {
+  const [tour, setTour] = useState<TourData>(DEMO_TOUR);
   const [activeSceneId, setActiveSceneId] = useState<string>(DEMO_TOUR.start_scene_id);
   const [bearing, setBearing] = useState<number>(45);
 
-  const currentScene = DEMO_TOUR.tour_scenes.find((s) => s.id === activeSceneId) || DEMO_TOUR.tour_scenes[0];
+  useEffect(() => {
+    async function loadTour() {
+      const data = await getTourById('22222222-2222-2222-2222-222222222222');
+      if (data && data.tour_scenes && data.tour_scenes.length > 0) {
+        setTour(data);
+        setActiveSceneId(data.start_scene_id || data.tour_scenes[0].id);
+      }
+    }
+    loadTour();
+  }, []);
+
+  const currentScene = tour.tour_scenes.find((s) => s.id === activeSceneId) || tour.tour_scenes[0];
 
   return (
     <section className="py-16 max-w-7xl mx-auto px-6 space-y-6">
@@ -47,7 +60,7 @@ export function LiveDemoSpotlight() {
               <Layers className="w-3.5 h-3.5 text-gold" />
               <span>Rooms:</span>
             </span>
-            {DEMO_TOUR.tour_scenes.map((scene) => {
+            {tour.tour_scenes.map((scene) => {
               const isActive = scene.id === activeSceneId;
               return (
                 <button
@@ -89,9 +102,9 @@ export function LiveDemoSpotlight() {
         <div className="relative h-[480px] w-full">
           <TourViewer
             tourData={{
-              scenes: DEMO_TOUR.tour_scenes,
+              scenes: tour.tour_scenes,
               startSceneId: activeSceneId,
-              hotspots: DEMO_TOUR.tour_hotspots,
+              hotspots: tour.tour_hotspots,
             }}
             fullscreen={false}
             onSceneChange={(sceneId) => {

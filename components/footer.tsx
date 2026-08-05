@@ -58,26 +58,26 @@ export function Footer() {
 
         {/* Col 3: Popular Localities */}
         <div className="space-y-3">
-          <h4 className="font-serif font-bold text-text-hi uppercase tracking-wider text-xs">Mangalore Localities</h4>
+          <h4 className="font-serif font-bold text-text-hi uppercase tracking-wider text-xs">Featured Metros</h4>
           <ul className="space-y-2">
             <li>
-              <Link href="/search?city=Mangalore&locality=Bejai" className="hover:text-text-hi transition">
-                Homes in Bejai
+              <Link href="/search?city=Mumbai" className="hover:text-text-hi transition">
+                Luxury Homes in Mumbai
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Mangalore&locality=Kadri" className="hover:text-text-hi transition">
-                Homes in Kadri
+              <Link href="/search?city=Bengaluru" className="hover:text-text-hi transition">
+                Villas in Bengaluru
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Mangalore&locality=Urwa" className="hover:text-text-hi transition">
-                Homes in Urwa & Ladyhill
+              <Link href="/search?city=Mangalore" className="hover:text-text-hi transition">
+                Sea View Homes in Mangalore
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Mangalore&locality=Falnir" className="hover:text-text-hi transition">
-                Homes in Falnir
+              <Link href="/search?city=Delhi+NCR" className="hover:text-text-hi transition">
+                Penthouses in Delhi NCR
               </Link>
             </li>
           </ul>

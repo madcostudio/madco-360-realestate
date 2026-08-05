@@ -1,31 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from '@/lib/location-context';
-import { DEMO_PROPERTIES_LIST, PropertyData } from '@/lib/mock-data';
+import { searchNearbyProperties } from '@/lib/supabase/queries';
+import { PropertyData } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Compass, Search, Filter, SlidersHorizontal } from 'lucide-react';
+import { MapPin, Compass, Search, Filter, SlidersHorizontal, Loader2 } from 'lucide-react';
 import { PropertyCard } from '@/components/property-card';
 
 export default function SearchPage() {
-  const { city, locality, radiusKm, setRadius, openLocationSheet } = useLocation();
+  const { city, locality, lat, lng, radiusKm, setRadius, openLocationSheet } = useLocation();
   const [bhkFilter, setBhkFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [properties, setProperties] = useState<PropertyData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const filteredProperties = DEMO_PROPERTIES_LIST.filter((p) => {
-    if (p.status !== 'published') return false;
-    if (bhkFilter !== 'all' && p.bhk.toString() !== bhkFilter) return false;
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      return (
-        p.title.toLowerCase().includes(q) ||
-        p.address.toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q)
-      );
+  useEffect(() => {
+    let isCancelled = false;
+    async function loadProperties() {
+      setIsLoading(true);
+      const data = await searchNearbyProperties({
+        lat,
+        lng,
+        radiusKm,
+        bhk: bhkFilter,
+        city,
+        query: searchQuery,
+      });
+      if (!isCancelled) {
+        setProperties(data);
+        setIsLoading(false);
+      }
     }
-    return true;
-  });
+    loadProperties();
+    return () => {
+      isCancelled = true;
+    };
+  }, [lat, lng, radiusKm, bhkFilter, city, searchQuery]);
 
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi pb-20">
@@ -48,7 +60,7 @@ export default function SearchPage() {
               className="px-4 py-2.5 rounded-xl bg-ink-950 border border-line hover:border-gold/50 text-text-hi text-xs font-semibold flex items-center space-x-2 transition self-start md:self-auto"
             >
               <MapPin className="w-4 h-4 text-gold" />
-              <span>Location: <strong className="text-gold">{locality ? `${locality}, ` : ''}{city || 'All Cities'}</strong></span>
+              <span>Location: <strong className="text-gold">{locality ? `${locality}, ` : ''}{city || 'All Cities'}</strong> {lat && lng ? `(${radiusKm}km radius)` : ''}</span>
             </button>
           </div>
 
@@ -86,16 +98,21 @@ export default function SearchPage() {
 
       {/* Results Grid */}
       <section className="max-w-7xl mx-auto px-6 py-10">
-        {filteredProperties.length === 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-3">
+            <Loader2 className="w-8 h-8 text-gold animate-spin" />
+            <p className="text-xs text-text-lo font-mono">Searching live spatial listings...</p>
+          </div>
+        ) : properties.length === 0 ? (
           <div className="text-center py-20 bg-ink-900 border border-line rounded-3xl p-8 space-y-3">
             <p className="text-base font-semibold text-text-hi">No matching 360° verified listings found</p>
             <p className="text-xs text-text-lo max-w-md mx-auto">
-              Try adjusting your search criteria or switch to another city locality.
+              Try adjusting your search radius, configuration filters, or select a different city.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProperties.map((property) => (
+            {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>

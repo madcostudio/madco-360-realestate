@@ -107,7 +107,15 @@ export function LocationSheet() {
     );
   };
 
-  const popularCities = ['Mumbai', 'Bengaluru', 'Delhi NCR', 'Hyderabad', 'Pune', 'Chennai', 'Goa'];
+  const popularCities = [
+    { name: 'Mangalore', lat: 12.9141, lng: 74.8560 },
+    { name: 'Mumbai', lat: 19.0760, lng: 72.8777 },
+    { name: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
+    { name: 'Goa', lat: 15.2993, lng: 74.1240 },
+    { name: 'Hyderabad', lat: 17.3850, lng: 78.4867 },
+    { name: 'Pune', lat: 18.5204, lng: 73.8567 },
+    { name: 'Delhi NCR', lat: 28.6139, lng: 77.2090 },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
@@ -202,15 +210,15 @@ export function LocationSheet() {
           <div className="flex flex-wrap gap-2">
             {popularCities.map((pop) => (
               <button
-                key={pop}
-                onClick={() => handleSelectCity(pop)}
+                key={pop.name}
+                onClick={() => handleSelectCity(pop.name, pop.lat.toString(), pop.lng.toString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                  city?.toLowerCase() === pop.toLowerCase()
+                  city?.toLowerCase() === pop.name.toLowerCase()
                     ? 'bg-brass text-ink-950 border-brass'
                     : 'bg-ink-950 text-text-hi border-line hover:border-brass'
                 }`}
               >
-                {pop}
+                {pop.name}
               </button>
             ))}
           </div>

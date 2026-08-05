@@ -44,7 +44,7 @@ export function Navbar() {
             >
               <MapPin className="w-3.5 h-3.5 text-gold" />
               <span className="truncate max-w-[120px] sm:max-w-[160px]">
-                {city ? `${locality ? `${locality}, ` : ''}${city}` : 'Mangalore'}
+                {city ? `${locality ? `${locality}, ` : ''}${city}` : 'All Cities'}
               </span>
             </button>
 

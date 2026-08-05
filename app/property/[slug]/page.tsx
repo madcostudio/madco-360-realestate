@@ -1,9 +1,10 @@
-import { createClient } from '@/lib/supabase/server';
-import { DEMO_PROPERTY, DEMO_TOUR, DEMO_PROPERTIES_LIST, PropertyData } from '@/lib/mock-data';
+import { getPropertyBySlug, getTourById, getPublishedProperties } from '@/lib/supabase/queries';
+import { PropertyData, TourData } from '@/lib/mock-data';
 import { InlineTourEmbed } from '@/components/inline-tour-embed';
 import { FavouriteButton } from '@/components/favourite-button';
 import { PropertyCompareDrawer } from '@/components/property-compare-drawer';
 import { PropertyCard } from '@/components/property-card';
+import { PropertyEnquiryCard } from '@/components/property-enquiry-card';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,31 +16,16 @@ interface PropertyDetailProps {
 
 export default async function PropertyDetailPage({ params }: PropertyDetailProps) {
   const { slug } = await params;
-  const supabase = createClient();
 
-  const { data: property } = await supabase
-    .from('properties')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  const property = await getPropertyBySlug(slug);
 
-  const activeProperty: PropertyData = property || (slug === DEMO_PROPERTY.slug ? DEMO_PROPERTY : DEMO_PROPERTY);
-
-  if (!activeProperty) {
+  if (!property) {
     notFound();
   }
 
-  const { data: tour } = await supabase
-    .from('tours')
-    .select(`
-      id, start_scene_id, status,
-      tour_scenes(id, name, sort_order, pano_levels, initial_yaw, initial_pitch),
-      tour_hotspots(id, scene_id, type, yaw, pitch, target_scene_id, title, body)
-    `)
-    .eq('id', activeProperty.tour_id)
-    .single();
-
-  const activeTour = tour || DEMO_TOUR;
+  const activeProperty: PropertyData = property;
+  const tour = activeProperty.tour_id ? await getTourById(activeProperty.tour_id) : null;
+  const allPublished = await getPublishedProperties();
 
   return (
     <main className="min-h-screen bg-slate-950 text-white pb-20">
@@ -140,7 +126,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
         </section>
 
         {/* SECTION 6.3: INLINE 360° TOUR EMBED WIDGET */}
-        <InlineTourEmbed slug={activeProperty.slug} tourData={activeTour} />
+        {tour && <InlineTourEmbed slug={activeProperty.slug} tourData={tour} />}
+
+        {/* Section: Direct Lead Enquiry & Site Visit Request */}
+        <section>
+          <PropertyEnquiryCard
+            propertyId={activeProperty.id}
+            propertyTitle={activeProperty.title}
+            price={activeProperty.price}
+          />
+        </section>
 
         {/* Section: Similar Verified Properties */}
         <section className="space-y-6 pt-6">
@@ -162,7 +157,8 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {DEMO_PROPERTIES_LIST.filter((p) => p.id !== activeProperty.id && p.status === 'published')
+            {allPublished
+              .filter((p) => p.id !== activeProperty.id && p.status === 'published')
               .slice(0, 2)
               .map((property) => (
                 <PropertyCard key={property.id} property={property} />
@@ -172,7 +168,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
       </div>
 
       {/* Property Compare Drawer */}
-      <PropertyCompareDrawer properties={DEMO_PROPERTIES_LIST} />
+      <PropertyCompareDrawer properties={allPublished} />
     </main>
   );
 }

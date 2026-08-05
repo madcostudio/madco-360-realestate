@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { trackEvent } from '@/lib/events';
-import { MessageSquare, Phone, User, Send, CheckCircle2, UserPlus } from 'lucide-react';
+import { submitEnquiryAction } from '@/app/actions/submit-enquiry';
+import { MessageSquare, Phone, User, Send, CheckCircle2, UserPlus, Loader2 } from 'lucide-react';
 
 interface VisitorLeadModalProps {
   isOpen: boolean;
@@ -30,20 +31,26 @@ export function VisitorLeadModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    await submitEnquiryAction({
+      propertyId,
+      visitorName: name,
+      visitorPhone: phone,
+      message,
+    });
+
     await trackEvent('tour_enquiry_from_tour', propertyId, {
       visitor_name: name,
       visitor_phone: phone,
       message,
     });
 
+    setLoading(false);
+    setSubmitted(true);
     setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        onClose();
-      }, 2000);
-    }, 600);
+      setSubmitted(false);
+      onClose();
+    }, 2000);
   };
 
   return (

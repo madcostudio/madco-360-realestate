@@ -1,9 +1,13 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import { TourViewer, SceneData, HotspotData } from '@/components/tour-viewer';
 import { DEMO_TOUR, TourData } from '@/lib/mock-data';
-import { createClient } from '@/lib/supabase/client';
+import {
+  fetchTourForBuilderAction,
+  saveTourHotspotAction,
+  deleteTourHotspotAction,
+} from '@/app/actions/tour-hotspots';
 import Link from 'next/link';
 import {
   Upload,
@@ -16,6 +20,8 @@ import {
   Sparkles,
   ArrowLeft,
   Info,
+  Loader2,
+  Save,
 } from 'lucide-react';
 
 interface TourBuilderProps {
@@ -24,7 +30,6 @@ interface TourBuilderProps {
 
 export default function TourBuilder({ params }: TourBuilderProps) {
   const { tourId } = use(params);
-  const supabase = createClient();
 
   const [tour, setTour] = useState<TourData>(DEMO_TOUR);
   const [selectedSceneId, setSelectedSceneId] = useState<string>(
@@ -33,6 +38,27 @@ export default function TourBuilder({ params }: TourBuilderProps) {
   const [mode, setMode] = useState<'preview' | 'place-hotspot'>('preview');
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [savingHotspot, setSavingHotspot] = useState<boolean>(false);
+  const [isLoadingTour, setIsLoadingTour] = useState<boolean>(true);
+
+  // Fetch live tour and hotspots from Supabase on mount
+  useEffect(() => {
+    async function loadTourData() {
+      setIsLoadingTour(true);
+      try {
+        const liveTour = await fetchTourForBuilderAction(tourId);
+        if (liveTour && liveTour.tour_scenes.length > 0) {
+          setTour(liveTour);
+          setSelectedSceneId(liveTour.start_scene_id || liveTour.tour_scenes[0].id);
+        }
+      } catch (err) {
+        console.warn('Could not load live tour, using demo fallback:', err);
+      } finally {
+        setIsLoadingTour(false);
+      }
+    }
+    loadTourData();
+  }, [tourId]);
 
   // New Hotspot Dialog state
   const [hotspotDialog, setHotspotDialog] = useState<{
@@ -87,7 +113,6 @@ export default function TourBuilder({ params }: TourBuilderProps) {
       }));
 
       setSelectedSceneId(sceneId);
-      await supabase.from('tour_scenes').insert(newScene);
     } catch (err: any) {
       console.error('Panorama upload error:', err);
       setUploadError(err.message || 'Failed to process equirectangular image.');
@@ -107,12 +132,15 @@ export default function TourBuilder({ params }: TourBuilderProps) {
     }
   };
 
-  // Save Hotspot
+  // Save Hotspot to live Supabase database
   const handleSaveHotspot = async () => {
     if (!hotspotDialog || !selectedSceneId) return;
 
+    setSavingHotspot(true);
+    const hotspotId = crypto.randomUUID();
+
     const newHotspot: HotspotData = {
-      id: crypto.randomUUID(),
+      id: hotspotId,
       sceneId: selectedSceneId,
       type: hotspotType,
       yaw: hotspotDialog.yaw,
@@ -122,22 +150,44 @@ export default function TourBuilder({ params }: TourBuilderProps) {
       targetSceneId: hotspotType === 'nav' ? hotspotTargetSceneId : undefined,
     };
 
+    // Optimistic UI update
     setTour((prev) => ({
       ...prev,
       tour_hotspots: [...prev.tour_hotspots, newHotspot],
     }));
 
-    await supabase.from('tour_hotspots').insert(newHotspot);
-    setHotspotDialog(null);
-    setMode('preview');
+    try {
+      await saveTourHotspotAction({
+        id: hotspotId,
+        sceneId: selectedSceneId,
+        type: hotspotType,
+        yaw: hotspotDialog.yaw,
+        pitch: hotspotDialog.pitch,
+        title: newHotspot.title,
+        body: newHotspot.body,
+        targetSceneId: newHotspot.targetSceneId,
+      });
+    } catch (err) {
+      console.error('Failed to persist hotspot to DB:', err);
+    } finally {
+      setSavingHotspot(false);
+      setHotspotDialog(null);
+      setMode('preview');
+    }
   };
 
-  // Delete Hotspot
-  const handleDeleteHotspot = (hotspotId: string) => {
+  // Delete Hotspot from live database
+  const handleDeleteHotspot = async (hotspotId: string) => {
     setTour((prev) => ({
       ...prev,
       tour_hotspots: prev.tour_hotspots.filter((h) => h.id !== hotspotId),
     }));
+
+    try {
+      await deleteTourHotspotAction(hotspotId);
+    } catch (err) {
+      console.error('Failed to delete hotspot from DB:', err);
+    }
   };
 
   // Publish Tour

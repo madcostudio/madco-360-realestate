@@ -1,18 +1,17 @@
-import { DEMO_PROPERTIES_LIST, PropertyData } from '@/lib/mock-data';
-import { InlineTourEmbed } from '@/components/inline-tour-embed';
-import { DEMO_TOUR } from '@/lib/mock-data';
-import Image from 'next/image';
+import { getPublishedProperties } from '@/lib/supabase/queries';
+import { PropertyData } from '@/lib/mock-data';
 import Link from 'next/link';
 import { MapPin, Compass, ArrowLeft } from 'lucide-react';
-import { notFound } from 'next/navigation';
 import { PropertyCard } from '@/components/property-card';
 
 export async function generateStaticParams() {
   return [
     { city: 'mumbai' },
     { city: 'bengaluru' },
+    { city: 'mangalore' },
     { city: 'delhi' },
     { city: 'hyderabad' },
+    { city: 'goa' },
   ];
 }
 
@@ -26,9 +25,13 @@ export default async function CityLandingPage({ params }: CityPageProps) {
   const rawCityName = cityParam.replace(/^homes-in-/, '').replace(/-/g, ' ');
   const capitalizedCity = rawCityName.charAt(0).toUpperCase() + rawCityName.slice(1);
 
-  const cityListings = DEMO_PROPERTIES_LIST.filter(
-    (p) => p.status === 'published'
+  const allPublished = await getPublishedProperties();
+  const cityListings = allPublished.filter(
+    (p) => p.city?.toLowerCase().trim() === rawCityName.toLowerCase().trim()
   );
+
+  // If no city-specific listing exists yet, show all published verified listings
+  const displayListings = cityListings.length > 0 ? cityListings : allPublished;
 
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi pb-20">
@@ -57,8 +60,21 @@ export default async function CityLandingPage({ params }: CityPageProps) {
 
       {/* Listing Grid */}
       <section className="max-w-7xl mx-auto px-6 py-12 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {cityListings.map((property) => (
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-text-lo font-mono uppercase tracking-wider">
+            Showing {displayListings.length} {cityListings.length > 0 ? 'homes in ' + capitalizedCity : 'featured homes across India'}
+          </span>
+          <Link
+            href="/search"
+            className="text-xs text-brass hover:underline font-semibold flex items-center space-x-1"
+          >
+            <span>Filter All Listings</span>
+            <Compass className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayListings.map((property) => (
             <PropertyCard key={property.id} property={property} imageHeight="h-64" />
           ))}
         </div>
@@ -66,3 +82,4 @@ export default async function CityLandingPage({ params }: CityPageProps) {
     </main>
   );
 }
+

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquare, PhoneCall, CheckCircle, Send } from 'lucide-react';
+import { MessageSquare, PhoneCall, CheckCircle, Send, Loader2 } from 'lucide-react';
 import { trackEvent } from '@/lib/events';
+import { submitEnquiryAction } from '@/app/actions/submit-enquiry';
 
 interface TourContactCtaProps {
   propertyId: string;
@@ -12,13 +13,24 @@ interface TourContactCtaProps {
 export function TourContactCta({ propertyId, propertyTitle }: TourContactCtaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('I just completed the 360° virtual tour and would like to schedule a private viewing.');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    
+    await submitEnquiryAction({
+      propertyId,
+      visitorName: name,
+      visitorPhone: phone,
+      message,
+    });
+
     await trackEvent('tour_enquiry_from_tour', propertyId, { name, phone, message });
+    setLoading(false);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
