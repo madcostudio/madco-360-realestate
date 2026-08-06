@@ -42,6 +42,8 @@ export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardDat
     status: p.status,
     cover_image: p.cover_image,
     tour_id: p.tour_id,
+    external_tour_url: p.external_tour_url || undefined,
+    external_tour_provider: p.external_tour_provider || undefined,
     description: p.description || '',
     featured: Boolean(p.featured),
     lat: p.lat,
@@ -110,6 +112,49 @@ export async function togglePropertyFeaturedAction(
     }
 
     return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updatePropertyTourUrlAction(
+  propertyId: string,
+  externalTourUrl: string
+): Promise<{ success: boolean; error?: string; provider?: string }> {
+  try {
+    const supabase = createClient();
+    const cleanUrl = externalTourUrl.trim();
+
+    let provider: string | null = null;
+    if (cleanUrl) {
+      if (!cleanUrl.startsWith('https://')) {
+        return { success: false, error: '360° Tour Link must be a valid secure URL starting with https://' };
+      }
+      try {
+        const parsed = new URL(cleanUrl);
+        const host = parsed.hostname.toLowerCase();
+        if (host.includes('pano.cool')) provider = 'panocool';
+        else if (host.includes('kuula')) provider = 'kuula';
+        else if (host.includes('matterport')) provider = 'matterport';
+        else provider = 'external';
+      } catch (e) {
+        return { success: false, error: 'Invalid URL format' };
+      }
+    }
+
+    const { error } = await supabase
+      .from('properties')
+      .update({
+        external_tour_url: cleanUrl || null,
+        external_tour_provider: provider,
+      })
+      .eq('id', propertyId);
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, provider: provider || undefined };
   } catch (err: any) {
     return { success: false, error: err.message };
   }

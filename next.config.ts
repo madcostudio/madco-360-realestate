@@ -6,15 +6,23 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "*.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "uskckrvlpczppnguylcq.supabase.co",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "*.supabase.co",
+        pathname: "/**",
       },
     ],
   },
@@ -41,7 +49,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(self)",
+            value: "camera=(), microphone=(), geolocation=(self), accelerometer=*, gyroscope=*, xr-spatial-tracking=*",
           },
         ],
       },

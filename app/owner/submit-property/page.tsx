@@ -13,6 +13,7 @@ export default function SubmitPropertyPage() {
   const [city, setCity] = useState('Mumbai');
   const [locality, setLocality] = useState('');
   const [description, setDescription] = useState('');
+  const [externalTourUrl, setExternalTourUrl] = useState('');
   const [requestMadcoCapture, setRequestMadcoCapture] = useState(true);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [panoFile, setPanoFile] = useState<File | null>(null);
@@ -33,6 +34,7 @@ export default function SubmitPropertyPage() {
     formData.append('city', city);
     formData.append('locality', locality || address.split(',')[0]);
     formData.append('description', description);
+    formData.append('externalTourUrl', externalTourUrl);
     formData.append('requestMadcoCapture', requestMadcoCapture ? 'true' : 'false');
 
     if (coverFile) {
@@ -201,6 +203,20 @@ export default function SubmitPropertyPage() {
                 placeholder="Highlight key luxury specs, flooring, sea view, fittings, and amenities..."
                 className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">360° Tour Link</label>
+              <input
+                type="url"
+                value={externalTourUrl}
+                onChange={(e) => setExternalTourUrl(e.target.value)}
+                placeholder="https://pano.cool/@your-handle/project-id or Kuula / Matterport link"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass font-mono text-xs"
+              />
+              <p className="text-[11px] text-slate-400 mt-1 leading-normal">
+                Paste the shareable/embed link to this property&apos;s 360° tour (Panocool, Kuula, Matterport, etc.). Leave blank if you&apos;re building the tour with panoramas instead.
+              </p>
             </div>
 
             {/* Media Uploads Section */}

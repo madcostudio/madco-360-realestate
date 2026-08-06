@@ -20,7 +20,28 @@ export async function submitPropertyAction(formData: FormData): Promise<SubmitPr
     const city = formData.get('city') as string;
     const locality = (formData.get('locality') as string) || address.split(',')[0] || city;
     const description = (formData.get('description') as string) || '';
+    const rawExternalTourUrl = (formData.get('externalTourUrl') as string || '').trim();
     const requestMadcoCapture = formData.get('requestMadcoCapture') === 'true';
+
+    let externalTourUrl: string | null = null;
+    let externalTourProvider: string | null = null;
+
+    if (rawExternalTourUrl) {
+      if (!rawExternalTourUrl.startsWith('https://')) {
+        return { success: false, error: '360° Tour Link must be a valid secure URL starting with https://' };
+      }
+      try {
+        const parsed = new URL(rawExternalTourUrl);
+        externalTourUrl = parsed.toString();
+        const host = parsed.hostname.toLowerCase();
+        if (host.includes('pano.cool')) externalTourProvider = 'panocool';
+        else if (host.includes('kuula')) externalTourProvider = 'kuula';
+        else if (host.includes('matterport')) externalTourProvider = 'matterport';
+        else externalTourProvider = 'external';
+      } catch (urlErr) {
+        return { success: false, error: 'Invalid 360° Tour Link URL format.' };
+      }
+    }
 
     const coverFile = formData.get('coverFile') as File | null;
     const panoFile = formData.get('panoFile') as File | null;
@@ -119,6 +140,8 @@ export async function submitPropertyAction(formData: FormData): Promise<SubmitPr
         description,
         status: 'pending',
         cover_image: coverImageUrl,
+        external_tour_url: externalTourUrl,
+        external_tour_provider: externalTourProvider,
         lat,
         lng,
         featured: false,

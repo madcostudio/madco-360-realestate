@@ -5,13 +5,25 @@ import { TourViewer } from './tour-viewer';
 import { TourData } from '@/lib/mock-data';
 import { Sparkles, Maximize2, Compass } from 'lucide-react';
 
+import { ExternalTourFrame } from './external-tour-frame';
+
 interface InlineTourEmbedProps {
   slug: string;
-  tourData: any;
+  title?: string;
+  externalTourUrl?: string;
+  tourData?: any;
 }
 
-export function InlineTourEmbed({ slug, tourData }: InlineTourEmbedProps) {
-  if (!tourData || !tourData.tour_scenes || tourData.tour_scenes.length === 0) {
+export function InlineTourEmbed({ slug, title, externalTourUrl, tourData }: InlineTourEmbedProps) {
+  const hasExternalTour = Boolean(externalTourUrl && externalTourUrl.trim().length > 0);
+  const hasRealLocalScenes = Boolean(
+    tourData &&
+    tourData.tour_scenes &&
+    tourData.tour_scenes.length > 0 &&
+    tourData.tour_scenes.some((s: any) => s.pano_levels?.high && !s.pano_levels.high.includes('/demo-panoramas/'))
+  );
+
+  if (!hasExternalTour && !hasRealLocalScenes) {
     return null;
   }
 
@@ -45,29 +57,39 @@ export function InlineTourEmbed({ slug, tourData }: InlineTourEmbedProps) {
       </div>
 
       {/* Embedded 360° Viewer Container */}
-      <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
-        <TourViewer
-          tourData={{
-            scenes: tourData.tour_scenes,
-            startSceneId: tourData.start_scene_id,
-            hotspots: tourData.tour_hotspots,
-          }}
-          fullscreen={false}
-        />
+      <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-800">
+        {hasExternalTour ? (
+          <div className="relative w-full h-[500px] sm:h-[600px] bg-slate-950">
+            <ExternalTourFrame
+              src={externalTourUrl!}
+              title={`${title || 'Property'} 360° Virtual Tour`}
+              className="w-full h-full"
+            />
+          </div>
+        ) : (
+          <TourViewer
+            tourData={{
+              scenes: tourData.tour_scenes,
+              startSceneId: tourData.start_scene_id,
+              hotspots: tourData.tour_hotspots,
+            }}
+            fullscreen={false}
+          />
+        )}
 
         {/* Quick Launch Card Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent flex items-center justify-between pointer-events-none">
+        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent flex items-center justify-between pointer-events-none z-20">
           <div className="pointer-events-auto flex items-center space-x-3">
-            <span className="text-xs text-slate-300 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700">
-              💡 Tip: Click and drag to look around, or click hotspot markers to switch rooms
+            <span className="text-xs text-slate-300 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 shadow-md">
+              💡 Interactive 360° Tour: Click &amp; drag to look around, or use on-screen hotspots to explore
             </span>
           </div>
 
           <Link
             href={`/property/${slug}/tour`}
-            className="pointer-events-auto text-xs font-semibold text-brass hover:text-white underline bg-estate-card/90 px-3 py-1.5 rounded-lg border border-brass/30 transition"
+            className="pointer-events-auto text-xs font-bold text-brass hover:text-white bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-brass/40 hover:border-brass transition shadow-md"
           >
-            Expand ↗
+            Launch Fullscreen ↗
           </Link>
         </div>
       </div>

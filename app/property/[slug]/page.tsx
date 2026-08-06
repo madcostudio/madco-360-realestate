@@ -25,14 +25,27 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
 
   const activeProperty: PropertyData = property;
   const tour = activeProperty.tour_id ? await getTourById(activeProperty.tour_id) : null;
+  const hasRealLocalScenes = Boolean(
+    tour &&
+    tour.tour_scenes &&
+    tour.tour_scenes.length > 0 &&
+    tour.tour_scenes.some((s) => s.pano_levels?.high && !s.pano_levels.high.includes('/demo-panoramas/'))
+  );
+  const hasTour = Boolean(
+    (activeProperty.external_tour_url && activeProperty.external_tour_url.trim().length > 0) ||
+    hasRealLocalScenes
+  );
   const allPublished = await getPublishedProperties();
+  const safeCover = activeProperty.cover_image && activeProperty.cover_image.startsWith('http') && !activeProperty.cover_image.endsWith('.txt')
+    ? activeProperty.cover_image
+    : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80';
 
   return (
     <main className="min-h-screen bg-slate-950 text-white pb-20">
       {/* SECTION 6.1: HERO BANNER */}
       <div className="relative h-[480px] w-full">
         <Image
-          src={activeProperty.cover_image}
+          src={safeCover}
           alt={activeProperty.title}
           fill
           priority
@@ -44,10 +57,12 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <span className="badge-for-sale">FOR SALE</span>
-              <span className="badge-tour-verified">
-                <Compass className="w-3.5 h-3.5 text-gold" />
-                <span>360° TOUR VERIFIED</span>
-              </span>
+              {hasTour && (
+                <span className="badge-tour-verified">
+                  <Compass className="w-3.5 h-3.5 text-gold" />
+                  <span>360° TOUR VERIFIED</span>
+                </span>
+              )}
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight">
@@ -72,13 +87,15 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
 
             <div className="flex items-center space-x-3">
               <FavouriteButton propertyId={activeProperty.id} />
-              <Link
-                href={`/property/${activeProperty.slug}/tour`}
-                className="py-3 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-sm flex items-center space-x-2 shadow-lg shadow-amber-500/20 transition hover:scale-[1.02]"
-              >
-                <Compass className="w-4 h-4" />
-                <span>Launch Fullscreen 360° Walkthrough</span>
-              </Link>
+              {hasTour && (
+                <Link
+                  href={`/property/${activeProperty.slug}/tour`}
+                  className="py-3 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-sm flex items-center space-x-2 shadow-lg shadow-amber-500/20 transition hover:scale-[1.02]"
+                >
+                  <Compass className="w-4 h-4" />
+                  <span>Launch Fullscreen 360° Walkthrough</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -126,7 +143,14 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
         </section>
 
         {/* SECTION 6.3: INLINE 360° TOUR EMBED WIDGET */}
-        {tour && <InlineTourEmbed slug={activeProperty.slug} tourData={tour} />}
+        {hasTour && (
+          <InlineTourEmbed
+            slug={activeProperty.slug}
+            title={activeProperty.title}
+            externalTourUrl={activeProperty.external_tour_url}
+            tourData={tour}
+          />
+        )}
 
         {/* Section: Direct Lead Enquiry & Site Visit Request */}
         <section>

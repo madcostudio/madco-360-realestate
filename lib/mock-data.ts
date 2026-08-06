@@ -46,9 +46,19 @@ export interface PropertyData {
   status: 'draft' | 'published' | 'pending' | 'rejected';
   cover_image: string;
   tour_id: string;
+  external_tour_url?: string;
+  external_tour_provider?: string;
   description?: string;
   owner_id?: string;
   featured?: boolean;
+}
+
+export function hasVerified360Tour(property?: PropertyData | null): boolean {
+  if (!property) return false;
+  if (property.external_tour_url && property.external_tour_url.trim().length > 0) {
+    return true;
+  }
+  return false;
 }
 
 export interface UserProfile {
@@ -129,6 +139,8 @@ export const DEMO_PROPERTY: PropertyData = {
   status: 'published',
   cover_image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
   tour_id: '22222222-2222-2222-2222-222222222222',
+  external_tour_url: 'https://pano.cool/@samgeorgeawdialjHNiqGH8/1st-project',
+  external_tour_provider: 'panocool',
   owner_id: '00000000-0000-0000-0000-000000000002',
   featured: true,
   description: 'Experience elevated coastal living in this masterfully designed 2BHK luxury penthouse featuring panoramic Arabian Sea vistas, designer brass accents, and full 360° interactive virtual walkthrough capabilities.'

@@ -44,6 +44,12 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
     ? property.description
     : `${property.bhk} BHK Suite · ${estimatedSqft} sq.ft. · Ready to Move`;
 
+  const safeCover = property.cover_image && property.cover_image.startsWith('http') && !property.cover_image.endsWith('.txt')
+    ? property.cover_image
+    : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80';
+
+  const hasTour = Boolean(property.external_tour_url && property.external_tour_url.trim().length > 0);
+
   return (
     <div
       className={`bg-ink-900 border border-line rounded-2xl overflow-hidden shadow-xl group hover:border-brass/40 transition duration-300 flex flex-col justify-between ${className}`}
@@ -51,7 +57,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
       {/* Card Image & Badges Overlay */}
       <div className={`relative ${imageHeight} w-full overflow-hidden`}>
         <Image
-          src={property.cover_image}
+          src={safeCover}
           alt={property.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -64,12 +70,14 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         <div className="absolute top-3 left-3 z-10">
           <span className="badge-for-sale">FOR SALE</span>
         </div>
-        <div className="absolute top-3 right-3 z-10">
-          <span className="badge-tour-verified">
-            <Compass className="w-3 h-3 text-gold" />
-            <span>360° TOUR VERIFIED</span>
-          </span>
-        </div>
+        {hasTour && (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="badge-tour-verified">
+              <Compass className="w-3 h-3 text-gold" />
+              <span>360° TOUR VERIFIED</span>
+            </span>
+          </div>
+        )}
 
         {/* Bottom Left: Large White Price + Gold Rate Pill */}
         <div className="absolute bottom-3 left-3 z-10">
@@ -81,16 +89,18 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
           </div>
         </div>
 
-        {/* Bottom Right: Orange/Amber Gradient Walk 360° Button */}
-        <div className="absolute bottom-3 right-3 z-10">
-          <Link
-            href={`/property/${property.slug}/tour`}
-            className="py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-ink-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-md shadow-amber-500/20 hover:scale-[1.02]"
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Walk 360°</span>
-          </Link>
-        </div>
+        {/* Bottom Right: Orange/Amber Gradient Walk 360° Button (Only if hasTour) */}
+        {hasTour && (
+          <div className="absolute bottom-3 right-3 z-10">
+            <Link
+              href={`/property/${property.slug}/tour`}
+              className="py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-ink-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-md shadow-amber-500/20 hover:scale-[1.02]"
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span>Walk 360°</span>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Card Body */}
