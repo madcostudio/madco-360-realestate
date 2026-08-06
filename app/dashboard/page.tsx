@@ -16,20 +16,27 @@ export default async function UserDashboardPage() {
 
   if (!profile) redirect('/login?next=/dashboard');
 
-  // Fetch user's favourites
+  // 1. Fetch user's saved favourites
   const { data: favourites } = await supabase
     .from('favourites')
     .select('property_id, properties(*)')
     .eq('user_id', user.id);
 
-  // Fetch user's enquiries
+  // 2. Fetch user's submitted enquiries with linked property details
   const { data: enquiries } = await supabase
     .from('enquiries')
+    .select('*, properties(title, slug)')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  // 3. Fetch user's capture bookings
+  const { data: captureBookings } = await supabase
+    .from('capture_bookings')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  // If owner/admin — fetch their submitted properties
+  // 4. If owner/admin — fetch their submitted properties
   let myListings: any[] = [];
   if (profile.role === 'owner' || profile.role === 'admin') {
     const { data } = await supabase
@@ -45,6 +52,7 @@ export default async function UserDashboardPage() {
       profile={profile}
       favourites={(favourites || []).map((f: any) => f.properties).filter(Boolean)}
       enquiries={enquiries || []}
+      captureBookings={captureBookings || []}
       myListings={myListings}
     />
   );

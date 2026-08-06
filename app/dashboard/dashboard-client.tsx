@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { User, Heart, MessageSquare, Search, Building2, Compass, Plus, ShieldCheck } from 'lucide-react';
+import { User, Heart, MessageSquare, Search, Building2, Compass, Plus } from 'lucide-react';
 import { PropertyCard } from '@/components/property-card';
 import type { UserProfile } from '@/lib/auth';
 
@@ -10,11 +10,12 @@ interface DashboardClientProps {
   profile: UserProfile;
   favourites: any[];
   enquiries: any[];
+  captureBookings: any[];
   myListings: any[];
 }
 
-export function DashboardClient({ profile, favourites, enquiries, myListings }: DashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<'favourites' | 'enquiries' | 'my-listings'>('favourites');
+export function DashboardClient({ profile, favourites, enquiries, captureBookings, myListings }: DashboardClientProps) {
+  const [activeTab, setActiveTab] = useState<'favourites' | 'enquiries' | 'my-listings' | 'capture-bookings'>('favourites');
 
   return (
     <main className="min-h-screen bg-slate-950 text-white p-6 sm:p-12 max-w-7xl mx-auto space-y-8">
@@ -86,6 +87,16 @@ export function DashboardClient({ profile, favourites, enquiries, myListings }: 
             <span>My Listings ({myListings.length})</span>
           </button>
         )}
+
+        <button
+          onClick={() => setActiveTab('capture-bookings')}
+          className={`pb-4 flex items-center space-x-2 transition border-b-2 whitespace-nowrap ${
+            activeTab === 'capture-bookings' ? 'border-brass text-brass font-bold' : 'border-transparent text-slate-400 hover:text-white'
+          }`}
+        >
+          <Compass className="w-4 h-4" />
+          <span>360° Capture Visits ({captureBookings.length})</span>
+        </button>
       </div>
 
       {/* Favourites Tab */}
@@ -114,18 +125,30 @@ export function DashboardClient({ profile, favourites, enquiries, myListings }: 
           </div>
         ) : (
           <div className="space-y-4">
-            {enquiries.map((enquiry: any) => (
-              <div key={enquiry.id} className="bg-estate-card border border-estate-border rounded-2xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-bold text-brass uppercase font-mono">{enquiry.status}</span>
-                    <span className="text-slate-500 text-xs">• {new Date(enquiry.created_at).toLocaleDateString()}</span>
+            {enquiries.map((enquiry: any) => {
+              const propTitle = enquiry.properties?.title || 'Property Enquiry';
+              const propSlug = enquiry.properties?.slug;
+              return (
+                <div key={enquiry.id} className="bg-estate-card border border-estate-border rounded-2xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-bold text-brass uppercase font-mono">{enquiry.status}</span>
+                      <span className="text-slate-500 text-xs">• {new Date(enquiry.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <h4 className="font-serif font-bold text-lg text-white">{propTitle}</h4>
+                    <p className="text-slate-300 text-xs">"{enquiry.message}"</p>
                   </div>
-                  <h4 className="font-serif font-bold text-lg text-white">{enquiry.property_id}</h4>
-                  <p className="text-slate-300 text-xs">"{enquiry.message}"</p>
+                  {propSlug && (
+                    <Link
+                      href={`/property/${propSlug}`}
+                      className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-brass text-white text-xs font-bold transition self-start md:self-auto"
+                    >
+                      View Property
+                    </Link>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )
       )}
@@ -161,6 +184,31 @@ export function DashboardClient({ profile, favourites, enquiries, myListings }: 
                   >
                     View Live Page
                   </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      )}
+
+      {/* Capture Bookings Tab */}
+      {activeTab === 'capture-bookings' && (
+        captureBookings.length === 0 ? (
+          <div className="text-center py-20 text-slate-400 space-y-2">
+            <Compass className="w-10 h-10 mx-auto text-slate-700" />
+            <p className="text-sm">No 360° capture visit requests yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {captureBookings.map((booking: any) => (
+              <div key={booking.id} className="bg-estate-card border border-estate-border rounded-2xl p-6 shadow-xl flex items-center justify-between">
+                <div>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-fern/20 text-fern border border-fern/40">
+                    {booking.status}
+                  </span>
+                  <h4 className="font-serif font-bold text-lg text-white mt-1">{booking.property_title}</h4>
+                  <p className="text-xs text-slate-400">Scheduled Date: {booking.preferred_date} | Address: {booking.address}</p>
+                  {booking.notes && <p className="text-xs text-brass mt-1">Note: {booking.notes}</p>}
                 </div>
               </div>
             ))}

@@ -35,6 +35,9 @@ export async function submitEnquiryAction(input: SubmitEnquiryInput): Promise<Su
       return { success: false, error: 'Name, phone number, and property ID are required.' };
     }
 
+    const { data: { user } } = await supabase.auth.getUser();
+    const effectiveUserId = userId || user?.id || null;
+
     const enquiryId = crypto.randomUUID();
 
     const { data, error } = await supabase
@@ -47,7 +50,7 @@ export async function submitEnquiryAction(input: SubmitEnquiryInput): Promise<Su
         visitor_email: visitorEmail ? visitorEmail.trim() : null,
         message: message.trim(),
         status: 'new',
-        ...(userId ? { user_id: userId } : {}),
+        ...(effectiveUserId ? { user_id: effectiveUserId } : {}),
       })
       .select()
       .single();
