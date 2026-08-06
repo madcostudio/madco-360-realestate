@@ -45,61 +45,69 @@ const NEIGHBORHOODS: Neighborhood[] = [
 ];
 
 export function MangaloreNeighborhoodsSection() {
-  const { setLocation } = useLocation();
+  const { city, setLocation } = useLocation();
+
+  const titleText = city ? `Explore Verified Homes in ${city}` : 'Explore Verified Homes by Locality';
+  const buttonText = city ? `View All ${city} Listings` : 'View All Listings';
 
   return (
     <section className="py-20 max-w-7xl mx-auto px-6 space-y-8 border-b border-line">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="text-xs uppercase tracking-widest text-gold font-mono mb-1">
-            // PRIME MANGALORE NEIGHBORHOODS
+            // PRIME LOCALITIES &amp; NEIGHBORHOODS
           </div>
           <h2 className="text-3xl font-serif font-bold text-text-hi">
-            Explore Verified Homes in Mangalore
+            {titleText}
           </h2>
           <p className="text-text-lo text-xs sm:text-sm mt-1">
             Browse hand-curated localities photographed and spatial-scanned by Mad.co Studio.
           </p>
         </div>
         <Link
-          href="/search"
-          onClick={() => setLocation({ city: 'Mangalore' })}
+          href={city ? `/search?city=${encodeURIComponent(city)}` : '/search'}
           className="text-xs font-bold text-gold hover:underline flex items-center space-x-1"
         >
-          <span>View All Mangalore Listings</span>
+          <span>{buttonText}</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {NEIGHBORHOODS.map((hood) => (
-          <Link
-            key={hood.slug}
-            href={`/search?city=Mangalore&locality=${encodeURIComponent(hood.name)}`}
-            onClick={() => setLocation({ city: 'Mangalore', locality: hood.name })}
-            className="group relative h-72 rounded-2xl overflow-hidden border border-line hover:border-gold/50 transition duration-300 shadow-xl flex flex-col justify-end p-6"
-          >
-            <Image
-              src={hood.image}
-              alt={hood.name}
-              fill
-              className="object-cover brightness-65 group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+        {NEIGHBORHOODS.map((hood) => {
+          const targetUrl = city
+            ? `/search?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(hood.name)}`
+            : `/search?locality=${encodeURIComponent(hood.name)}`;
 
-            <div className="relative z-10 space-y-1">
-              <div className="inline-flex items-center space-x-1 text-[10px] uppercase font-mono tracking-wider text-gold">
-                <MapPin className="w-3 h-3" />
-                <span>{hood.count} 360° Tours</span>
+          return (
+            <Link
+              key={hood.slug}
+              href={targetUrl}
+              onClick={() => setLocation({ city: city || 'All Cities', locality: hood.name })}
+              className="group relative h-72 rounded-2xl overflow-hidden border border-line hover:border-gold/50 transition duration-300 shadow-xl flex flex-col justify-end p-6"
+            >
+              <Image
+                src={hood.image}
+                alt={hood.name}
+                fill
+                className="object-cover brightness-65 group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+
+              <div className="relative z-10 space-y-1">
+                <div className="inline-flex items-center space-x-1 text-[10px] uppercase font-mono tracking-wider text-gold">
+                  <MapPin className="w-3 h-3" />
+                  <span>{hood.count} 360° Tours</span>
+                </div>
+                <h4 className="font-serif font-bold text-xl text-text-hi flex items-center justify-between">
+                  <span>{hood.name}</span>
+                  <ArrowRight className="w-4 h-4 text-gold group-hover:translate-x-1 transition-transform" />
+                </h4>
+                <p className="text-[11px] text-text-lo line-clamp-1">{hood.highlight}</p>
               </div>
-              <h4 className="font-serif font-bold text-xl text-text-hi flex items-center justify-between">
-                <span>{hood.name}</span>
-                <ArrowRight className="w-4 h-4 text-gold group-hover:translate-x-1 transition-transform" />
-              </h4>
-              <p className="text-[11px] text-text-lo line-clamp-1">{hood.highlight}</p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

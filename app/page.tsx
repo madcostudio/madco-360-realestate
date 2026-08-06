@@ -106,7 +106,7 @@ export default async function HomePage() {
       {/* 4. WHY MAD.CO 360° WINS */}
       <WhyMadcoSection />
 
-      {/* 5. PRIME MANGALORE NEIGHBORHOODS */}
+      {/* 5. PRIME LOCALITIES & NEIGHBORHOODS */}
       <MangaloreNeighborhoodsSection />
 
       {/* 6. OWNER CTA BAND */}

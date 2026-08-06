@@ -71,8 +71,8 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Mangalore" className="hover:text-text-hi transition">
-                Sea View Homes in Mangalore
+              <Link href="/search" className="hover:text-text-hi transition">
+                Sea View Homes &amp; Penthouses
               </Link>
             </li>
             <li>
