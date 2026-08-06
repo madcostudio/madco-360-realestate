@@ -8,8 +8,20 @@ import { getFeaturedProperties } from '@/lib/supabase/queries';
 import { Compass, ArrowRight, MapPin, Sparkles, ShieldCheck } from 'lucide-react';
 import { PropertyCard } from '@/components/property-card';
 
+import { createClient } from '@/lib/supabase/server';
+
 export default async function HomePage() {
   const featuredProperties = await getFeaturedProperties();
+  const supabase = await createClient();
+
+  const { data: heroContent } = await supabase
+    .from('site_content')
+    .select('value')
+    .eq('key', 'hero_section')
+    .single();
+
+  const heroHeading = heroContent?.value?.heading || 'Walk through your next home before you ever step inside it.';
+  const heroSubcopy = heroContent?.value?.subcopy || 'Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio.';
 
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi">
@@ -26,14 +38,14 @@ export default async function HomePage() {
             <span>MAD.CO ESTATES • 360° VERIFIED REAL ESTATE MARKETPLACE</span>
           </div>
 
-          {/* Solid Color Headline (Approved Single Solid Color Fix) */}
+          {/* Solid Color Headline */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-text-hi tracking-tight leading-[1.08]">
-            Walk through your next home <em className="italic font-normal">before</em> you ever step inside it.
+            {heroHeading}
           </h1>
 
           {/* Sub-copy */}
           <p className="text-text-lo text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio.
+            {heroSubcopy}
           </p>
 
           {/* Dual Action CTA Buttons (Purple Primary + Gold Outline) */}

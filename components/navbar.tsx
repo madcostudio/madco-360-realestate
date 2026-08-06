@@ -58,8 +58,28 @@ export function Navbar() {
     router.push('/');
   };
 
+  const [announcementText, setAnnouncementText] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from('site_content')
+      .select('value')
+      .eq('key', 'announcement_banner')
+      .single()
+      .then(({ data }) => {
+        if (data?.value?.enabled && data?.value?.text) {
+          setAnnouncementText(data.value.text);
+        }
+      });
+  }, []);
+
   return (
     <>
+      {announcementText && (
+        <div className="bg-gradient-to-r from-brass/20 via-primary/20 to-gold/20 border-b border-brass/30 text-white text-xs font-semibold py-2 px-4 text-center backdrop-blur-md flex items-center justify-center space-x-2">
+          <span>{announcementText}</span>
+        </div>
+      )}
       <header className="sticky top-0 z-40 w-full bg-ink-950/90 backdrop-blur-xl border-b border-line">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo Lockup */}
