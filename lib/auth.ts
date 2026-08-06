@@ -1,34 +1,17 @@
-import { DEMO_USERS, UserProfile } from './mock-data';
+// lib/auth.ts
+// Real auth type helpers. DEMO_USERS and the mock role switcher have been removed.
+// Auth state is now managed by Supabase Auth via @supabase/ssr.
 
-export type AuthRole = 'visitor' | 'buyer' | 'owner' | 'admin';
+export type AuthRole = 'buyer' | 'owner' | 'admin';
 
-export interface AuthState {
-  user: UserProfile | null;
+export interface UserProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  avatar_url?: string;
   role: AuthRole;
-  isAuthenticated: boolean;
-}
-
-// In-memory auth session store for client state
-let currentActiveRole: AuthRole = 'buyer'; // default active role for demo testing
-
-export function getCurrentAuth(): AuthState {
-  if (currentActiveRole === 'visitor') {
-    return { user: null, role: 'visitor', isAuthenticated: false };
-  }
-  const user = DEMO_USERS[currentActiveRole] || DEMO_USERS['buyer'];
-  return {
-    user,
-    role: currentActiveRole,
-    isAuthenticated: true,
-  };
-}
-
-export function setActiveRole(role: AuthRole) {
-  currentActiveRole = role;
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('madco_active_role', role);
-    window.dispatchEvent(new Event('auth-role-changed'));
-  }
+  is_owner: boolean;
 }
 
 export function isAdmin(user: UserProfile | null): boolean {

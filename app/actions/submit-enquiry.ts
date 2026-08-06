@@ -20,7 +20,7 @@ export interface SubmitEnquiryResult {
 
 export async function submitEnquiryAction(input: SubmitEnquiryInput): Promise<SubmitEnquiryResult> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const {
       propertyId,

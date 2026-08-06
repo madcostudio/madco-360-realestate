@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCurrentAuth, AuthState } from '@/lib/auth';
 import { PropertyData } from '@/lib/mock-data';
 import {
   fetchAdminDashboardDataAction,
@@ -31,7 +30,6 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
-  const [auth, setAuth] = useState<AuthState>({ user: null, role: 'admin', isAuthenticated: true });
   const [properties, setProperties] = useState<PropertyData[]>([]);
   const [recentEnquiries, setRecentEnquiries] = useState<AdminDashboardData['recentEnquiries']>([]);
   const [metrics, setMetrics] = useState({
@@ -70,7 +68,6 @@ export default function AdminDashboardPage() {
   };
 
   useEffect(() => {
-    setAuth(getCurrentAuth());
     loadData();
   }, []);
 

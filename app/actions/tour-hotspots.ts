@@ -5,7 +5,7 @@ import { TourHotspot, TourData, TourScene } from '@/lib/mock-data';
 
 export async function fetchTourForBuilderAction(tourId: string): Promise<TourData | null> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data: tour, error: tourErr } = await supabase
       .from('tours')
@@ -86,7 +86,7 @@ export async function saveTourHotspotAction(hotspot: {
   body?: string;
 }): Promise<{ success: boolean; hotspot?: TourHotspot; error?: string }> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const hotspotId = hotspot.id || crypto.randomUUID();
 
@@ -135,7 +135,7 @@ export async function deleteTourHotspotAction(
   hotspotId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('tour_hotspots')

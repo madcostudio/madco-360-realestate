@@ -11,7 +11,7 @@ export interface SubmitPropertyResult {
 
 export async function submitPropertyAction(formData: FormData): Promise<SubmitPropertyResult> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const title = formData.get('title') as string;
     const priceStr = formData.get('price') as string;

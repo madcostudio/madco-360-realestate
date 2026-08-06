@@ -2,8 +2,12 @@ import { createClient as createServerClient } from './server';
 import { createClient as createBrowserClient } from './client';
 import { PropertyData, TourData, TourScene, TourHotspot, DEMO_PROPERTIES_LIST, DEMO_PROPERTY, DEMO_TOUR } from '@/lib/mock-data';
 
-function getSupabase(isServer: boolean = typeof window === 'undefined') {
-  return isServer ? createServerClient() : createBrowserClient();
+// Browser client is sync (createBrowserClient). Server client is async (must await createServerClient()).
+// queries.ts is called from both client and server components.
+// For server-side queries it uses the browser-side anon client (sufficient for public data with RLS).
+// Privileged writes use direct server action clients.
+function getSupabase() {
+  return createBrowserClient();
 }
 
 /**

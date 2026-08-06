@@ -22,7 +22,7 @@ export interface AdminDashboardData {
 }
 
 export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardData> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. Fetch all properties ordered by created_at desc
   const { data: propertiesData, error: propErr } = await supabase
@@ -77,7 +77,7 @@ export async function updatePropertyStatusAction(
   status: 'published' | 'pending' | 'rejected'
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('properties')
@@ -100,7 +100,7 @@ export async function togglePropertyFeaturedAction(
   featured: boolean
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('properties')
@@ -122,7 +122,7 @@ export async function updatePropertyTourUrlAction(
   externalTourUrl: string
 ): Promise<{ success: boolean; error?: string; provider?: string }> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const cleanUrl = externalTourUrl.trim();
 
     let provider: string | null = null;

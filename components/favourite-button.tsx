@@ -1,35 +1,57 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { getCurrentAuth } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/client';
 
 interface FavouriteButtonProps {
   propertyId: string;
   onRequireAuth?: () => void;
 }
 
-const userFavouritesSet = new Set<string>(['11111111-1111-1111-1111-111111111111']);
-
 export function FavouriteButton({ propertyId, onRequireAuth }: FavouriteButtonProps) {
-  const [isFav, setIsFav] = useState(userFavouritesSet.has(propertyId));
+  const [isFav, setIsFav] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const supabase = createClient();
 
-  const toggleFavourite = (e: React.MouseEvent) => {
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserId(user.id);
+        supabase
+          .from('favourites')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('property_id', propertyId)
+          .single()
+          .then(({ data }) => {
+            if (data) setIsFav(true);
+          });
+      }
+    });
+  }, [propertyId]);
+
+  const toggleFavourite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const auth = getCurrentAuth();
-    if (!auth.isAuthenticated) {
+    if (!userId) {
       onRequireAuth?.();
       return;
     }
 
     if (isFav) {
-      userFavouritesSet.delete(propertyId);
       setIsFav(false);
+      await supabase
+        .from('favourites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('property_id', propertyId);
     } else {
-      userFavouritesSet.add(propertyId);
       setIsFav(true);
+      await supabase
+        .from('favourites')
+        .insert({ user_id: userId, property_id: propertyId });
     }
   };
 

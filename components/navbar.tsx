@@ -2,24 +2,61 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Compass, Building2, User, LogIn, ShieldCheck, MapPin, Camera } from 'lucide-react';
-import { getCurrentAuth, AuthState } from '@/lib/auth';
+import { Compass, Building2, User, LogIn, LogOut, ShieldCheck, MapPin, Camera } from 'lucide-react';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { useLocation } from '@/lib/location-context';
 import { LocationSheet } from '@/components/location-sheet';
 import { IpGeoToast } from '@/components/ip-geo-toast';
+import { createClient } from '@/lib/supabase/client';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+import type { UserProfile } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
 
 export function Navbar() {
-  const [auth, setAuth] = useState<AuthState>({ user: null, role: 'buyer', isAuthenticated: true });
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { city, locality, openLocationSheet } = useLocation();
+  const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
-    setAuth(getCurrentAuth());
-    const handleRoleChanged = () => setAuth(getCurrentAuth());
-    window.addEventListener('auth-role-changed', handleRoleChanged);
-    return () => window.removeEventListener('auth-role-changed', handleRoleChanged);
+    // Get initial session
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user ?? null);
+      if (user) loadProfile(user.id);
+    });
+
+    // Subscribe to auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        loadProfile(u.id);
+      } else {
+        setProfile(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  async function loadProfile(userId: string) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if (data) setProfile(data as UserProfile);
+  }
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    router.refresh();
+    router.push('/');
+  };
 
   return (
     <>
@@ -37,7 +74,7 @@ export function Navbar() {
 
           {/* Nav Actions */}
           <nav className="flex items-center space-x-4 sm:space-x-6">
-            {/* Persistent Header Location Chip */}
+            {/* Location Chip */}
             <button
               onClick={openLocationSheet}
               className="px-3.5 py-1.5 rounded-full bg-ink-900 border border-line hover:border-gold/40 text-text-lo hover:text-text-hi text-xs font-semibold flex items-center space-x-1.5 transition"
@@ -56,7 +93,6 @@ export function Navbar() {
               <span>360° Listings</span>
             </Link>
 
-            {/* Shoot My Property Outline Button */}
             <Link
               href="/owner/submit-property"
               className="btn-outline-gold text-xs hidden sm:flex items-center space-x-1.5 !py-1.5 !px-3 !rounded-lg"
@@ -65,7 +101,7 @@ export function Navbar() {
               <span>Shoot My Property</span>
             </Link>
 
-            {auth.role === 'admin' && (
+            {profile?.role === 'admin' && (
               <Link
                 href="/admin/dashboard"
                 className="px-3 py-1.5 rounded-xl bg-ink-900 border border-brass/40 text-brass text-xs font-bold transition flex items-center space-x-1"
@@ -75,21 +111,35 @@ export function Navbar() {
               </Link>
             )}
 
-            <Link
-              href="/dashboard"
-              className="text-xs font-semibold text-text-lo hover:text-text-hi transition flex items-center space-x-1"
-            >
-              <User className="w-4 h-4 text-text-lo" />
-              <span className="capitalize hidden lg:inline">{auth.user ? auth.user.full_name.split(' ')[0] : 'Guest'}</span>
-            </Link>
-
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="btn-primary text-xs shadow-none"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>{auth.isAuthenticated ? 'Account' : 'Sign In'}</span>
-            </button>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-xs font-semibold text-text-lo hover:text-text-hi transition flex items-center space-x-1"
+                >
+                  <User className="w-4 h-4 text-text-lo" />
+                  <span className="capitalize hidden lg:inline">
+                    {profile?.full_name?.split(' ')[0] || 'Account'}
+                  </span>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="btn-primary text-xs shadow-none"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="btn-primary text-xs shadow-none"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
+            )}
           </nav>
         </div>
       </header>
