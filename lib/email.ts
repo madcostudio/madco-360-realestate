@@ -2,6 +2,8 @@
  * Email Notification Utility
  * Integrates with Resend if RESEND_API_KEY is configured in .env.local,
  * with structured console audit fallback.
+ * 
+ * TODO: wire Resend — Pending owner API key from resend.com
  */
 
 export interface EmailNotificationPayload {

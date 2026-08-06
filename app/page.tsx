@@ -8,20 +8,29 @@ import { getFeaturedProperties } from '@/lib/supabase/queries';
 import { Compass, ArrowRight, MapPin, Sparkles, ShieldCheck } from 'lucide-react';
 import { PropertyCard } from '@/components/property-card';
 
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createBrowserClient } from '@/lib/supabase/client';
+
+export const revalidate = 0;
 
 export default async function HomePage() {
   const featuredProperties = await getFeaturedProperties();
-  const supabase = await createClient();
+  const supabase = createBrowserClient();
 
-  const { data: heroContent } = await supabase
-    .from('site_content')
-    .select('value')
-    .eq('key', 'hero_section')
-    .single();
+  let heroHeading = 'Walk through your next home before you ever step inside it.';
+  let heroSubcopy = 'Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio.';
 
-  const heroHeading = heroContent?.value?.heading || 'Walk through your next home before you ever step inside it.';
-  const heroSubcopy = heroContent?.value?.subcopy || 'Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio.';
+  try {
+    const { data: heroContent } = await supabase
+      .from('site_content')
+      .select('value')
+      .eq('key', 'hero_section')
+      .single();
+
+    if (heroContent?.value?.heading) heroHeading = heroContent.value.heading;
+    if (heroContent?.value?.subcopy) heroSubcopy = heroContent.value.subcopy;
+  } catch (err) {
+    console.warn('Could not fetch hero_section from site_content:', err);
+  }
 
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi">
