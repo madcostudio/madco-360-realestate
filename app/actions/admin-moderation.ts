@@ -159,3 +159,51 @@ export async function updatePropertyTourUrlAction(
     return { success: false, error: err.message };
   }
 }
+
+export interface UpdatePropertyDetailsPayload {
+  title: string;
+  price: number;
+  bhk: number;
+  address: string;
+  city: string;
+  locality?: string;
+  status: 'draft' | 'published' | 'pending' | 'rejected';
+  description?: string;
+  cover_image?: string;
+  featured?: boolean;
+}
+
+export async function updatePropertyDetailsAction(
+  propertyId: string,
+  payload: UpdatePropertyDetailsPayload
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from('properties')
+      .update({
+        title: payload.title,
+        price: payload.price,
+        bhk: payload.bhk,
+        address: payload.address,
+        city: payload.city,
+        locality: payload.locality || payload.address,
+        status: payload.status,
+        description: payload.description,
+        cover_image: payload.cover_image,
+        featured: payload.featured,
+      })
+      .eq('id', propertyId);
+
+    if (error) {
+      console.error('Error updating property details:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+

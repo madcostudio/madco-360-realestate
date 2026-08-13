@@ -51,14 +51,22 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login', redirectTo }:
           },
         });
         if (error) {
-          setErrorMsg(error.message);
+          if (error.message.includes('Failed to fetch') || error.message.includes('fetch failed')) {
+            setErrorMsg('Unable to reach the backend server. Please configure a valid NEXT_PUBLIC_SUPABASE_URL in .env.local.');
+          } else {
+            setErrorMsg(error.message);
+          }
           return;
         }
         setSuccessMsg('Account created! Check your email to confirm, then sign in.');
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
-          setErrorMsg(error.message);
+          if (error.message.includes('Failed to fetch') || error.message.includes('fetch failed')) {
+            setErrorMsg('Unable to reach the backend server. Please configure a valid NEXT_PUBLIC_SUPABASE_URL and anon key in .env.local.');
+          } else {
+            setErrorMsg(error.message);
+          }
           return;
         }
         setSuccessMsg('Signed in!');
@@ -77,7 +85,11 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login', redirectTo }:
     startTransition(async () => {
       const { error } = await supabase.auth.signInWithOtp({ phone });
       if (error) {
-        setErrorMsg(error.message);
+        if (error.message.includes('Failed to fetch') || error.message.includes('fetch failed')) {
+          setErrorMsg('Unable to reach the backend server. Please configure a valid NEXT_PUBLIC_SUPABASE_URL and anon key in .env.local.');
+        } else {
+          setErrorMsg(error.message);
+        }
         return;
       }
       setOtpSent(true);
@@ -94,7 +106,11 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login', redirectTo }:
         type: 'sms',
       });
       if (error) {
-        setErrorMsg(error.message);
+        if (error.message.includes('Failed to fetch') || error.message.includes('fetch failed')) {
+          setErrorMsg('Unable to reach the backend server. Please configure a valid NEXT_PUBLIC_SUPABASE_URL and anon key in .env.local.');
+        } else {
+          setErrorMsg(error.message);
+        }
         return;
       }
       setSuccessMsg('Phone verified! Welcome to Madco Estates.');
