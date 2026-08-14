@@ -30,26 +30,43 @@ export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardDat
     .select('*')
     .order('created_at', { ascending: false });
 
-  const properties: PropertyData[] = (propertiesData || []).map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    slug: p.slug,
-    price: Number(p.price),
-    bhk: Number(p.bhk),
-    address: p.address,
-    city: p.city,
-    locality: p.locality || p.address,
-    status: p.status,
-    cover_image: p.cover_image,
-    tour_id: p.tour_id,
-    external_tour_url: p.external_tour_url || undefined,
-    external_tour_provider: p.external_tour_provider || undefined,
-    description: p.description || '',
-    featured: Boolean(p.featured),
-    lat: p.lat,
-    lng: p.lng,
-    created_at: p.created_at,
-  }));
+  const properties: PropertyData[] = (propertiesData || []).map((p: any) => {
+    let rawDesc = p.description || '';
+    let contact_phone = '';
+    let map_url = '';
+    const metaMatch = rawDesc.match(/<!-- META: (.*?) -->/);
+    if (metaMatch) {
+      try {
+        const meta = JSON.parse(metaMatch[1]);
+        contact_phone = meta.contact_phone || '';
+        map_url = meta.map_url || '';
+      } catch (e) {}
+      rawDesc = rawDesc.replace(metaMatch[0], '').trim();
+    }
+
+    return {
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      price: Number(p.price),
+      bhk: Number(p.bhk),
+      address: p.address,
+      city: p.city,
+      locality: p.locality || p.address,
+      status: p.status,
+      cover_image: p.cover_image,
+      tour_id: p.tour_id,
+      external_tour_url: p.external_tour_url || undefined,
+      external_tour_provider: p.external_tour_provider || undefined,
+      description: rawDesc,
+      featured: Boolean(p.featured),
+      contact_phone: contact_phone,
+      map_url: map_url,
+      lat: p.lat,
+      lng: p.lng,
+      created_at: p.created_at,
+    };
+  });
 
   // 2. Fetch enquiries
   const { data: enquiriesData } = await supabase
@@ -171,6 +188,8 @@ export interface UpdatePropertyDetailsPayload {
   description?: string;
   cover_image?: string;
   featured?: boolean;
+  contact_phone?: string;
+  map_url?: string;
 }
 
 export async function updatePropertyDetailsAction(
@@ -179,6 +198,12 @@ export async function updatePropertyDetailsAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = await createClient();
+
+    // Pack contact_phone and map_url into description since columns don't exist in DB
+    const packedDescription = `${payload.description || ''}\n\n<!-- META: ${JSON.stringify({
+      contact_phone: payload.contact_phone || '',
+      map_url: payload.map_url || ''
+    })} -->`;
 
     const { error } = await supabase
       .from('properties')
@@ -190,7 +215,7 @@ export async function updatePropertyDetailsAction(
         city: payload.city,
         locality: payload.locality || payload.address,
         status: payload.status,
-        description: payload.description,
+        description: packedDescription,
         cover_image: payload.cover_image,
         featured: payload.featured,
       })

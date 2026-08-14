@@ -30,7 +30,7 @@ export default function RefundPolicyPage() {
         <section className="space-y-2">
           <h2 className="font-serif font-bold text-lg text-text-hi">3. Contact Studio Support</h2>
           <p>
-            For shoot rescheduling or billing queries, contact our support team at <code>support@madco.in</code> or WhatsApp us at +91 99999 00000.
+            For shoot rescheduling or billing queries, contact our support team at <code>support@madco.in</code> or WhatsApp us at <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="text-brass hover:underline">+91 98765 43210</a>.
           </p>
         </section>
       </div>

@@ -17,16 +17,21 @@ export function LocationIpToast() {
     const hasDismissed = sessionStorage.getItem('dismissed_location_prompt');
     if (hasDismissed) return;
 
-    // Fast timezone/locale heuristic for Indian metros fallback
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (tz.includes('Calcutta') || tz.includes('Kolkata') || tz.includes('Asia/Colombo')) {
-        // Suggest Mumbai / Bengaluru / Mangalore
-        setSuggestedCity('Mumbai');
+    // Fetch real location based on IP
+    const detectLocation = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        if (data && data.city) {
+          setSuggestedCity(data.city);
+        }
+      } catch (error) {
+        console.error('Failed to detect location:', error);
       }
-    } catch {
-      // Ignore heuristic failures
-    }
+    };
+    
+    detectLocation();
   }, [city, dismissed]);
 
   if (!suggestedCity || city || dismissed) return null;

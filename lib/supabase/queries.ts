@@ -83,7 +83,29 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyData | nu
       return fallback || null;
     }
 
-    return (data as PropertyData) || null;
+    if (data) {
+      let rawDesc = data.description || '';
+      let contact_phone = '';
+      let map_url = '';
+      const metaMatch = rawDesc.match(/<!-- META: (.*?) -->/);
+      if (metaMatch) {
+        try {
+          const meta = JSON.parse(metaMatch[1]);
+          contact_phone = meta.contact_phone || '';
+          map_url = meta.map_url || '';
+        } catch (e) {}
+        rawDesc = rawDesc.replace(metaMatch[0], '').trim();
+      }
+
+      return {
+        ...data,
+        description: rawDesc,
+        contact_phone: contact_phone || data.contact_phone,
+        map_url: map_url,
+      } as PropertyData;
+    }
+
+    return null;
   } catch (err) {
     console.warn(`Fallback property lookup for slug "${slug}":`, err);
     return DEMO_PROPERTIES_LIST.find((p) => p.slug === slug) || null;

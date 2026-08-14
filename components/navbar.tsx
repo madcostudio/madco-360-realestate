@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Compass, Building2, User, LogIn, LogOut, ShieldCheck, MapPin, Camera } from 'lucide-react';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { useLocation } from '@/lib/location-context';
 import { LocationSheet } from '@/components/location-sheet';
-import { IpGeoToast } from '@/components/ip-geo-toast';
 import { createClient } from '@/lib/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { UserProfile } from '@/lib/auth';
@@ -84,12 +84,14 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo Lockup */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <span className="font-bold text-2xl text-text-hi tracking-tight font-sans group-hover:text-primary transition">
-              Mad.co
-            </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gold/15 text-gold border border-gold/30">
-              360° SPATIAL
-            </span>
+            <Image 
+              src="/madco-logo.png" 
+              alt="Mad.co Estates 360 Spatial" 
+              width={200} 
+              height={60} 
+              className="w-auto h-8 sm:h-10 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+              priority 
+            />
           </Link>
 
           {/* Nav Actions */}
@@ -166,7 +168,6 @@ export function Navbar() {
 
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       <LocationSheet />
-      <IpGeoToast />
     </>
   );
 }

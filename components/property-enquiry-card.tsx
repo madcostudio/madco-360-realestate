@@ -8,9 +8,10 @@ interface PropertyEnquiryCardProps {
   propertyId: string;
   propertyTitle: string;
   price: number;
+  contactPhone?: string;
 }
 
-export function PropertyEnquiryCard({ propertyId, propertyTitle, price }: PropertyEnquiryCardProps) {
+export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactPhone }: PropertyEnquiryCardProps) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -35,6 +36,11 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price }: Proper
 
       if (result.success) {
         setSubmitted(true);
+        if (contactPhone) {
+          const textMsg = `*New Lead Enquiry: ${propertyTitle}*\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\n\nMessage: ${message}`;
+          const waUrl = `https://wa.me/${contactPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(textMsg)}`;
+          window.open(waUrl, '_blank');
+        }
       } else {
         setError(result.error || 'Failed to submit enquiry. Please try again.');
       }

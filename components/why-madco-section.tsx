@@ -1,4 +1,20 @@
+'use client';
+
 import { ShieldCheck, Compass, Camera, Sparkles, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+};
 
 export function WhyMadcoSection() {
   return (
@@ -16,8 +32,14 @@ export function WhyMadcoSection() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-ink-900 border border-line hover:border-gold/40 rounded-3xl p-8 space-y-4 shadow-xl transition">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-8"
+      >
+        <motion.div variants={cardVariants} className="bg-ink-900 border border-line hover:border-gold/40 rounded-3xl p-8 space-y-4 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-gold/10">
           <div className="w-12 h-12 rounded-2xl bg-gold/15 text-gold flex items-center justify-center border border-gold/30">
             <ShieldCheck className="w-6 h-6" />
           </div>
@@ -35,9 +57,9 @@ export function WhyMadcoSection() {
               <span>Ownership & title documentation check</span>
             </li>
           </ul>
-        </div>
+        </motion.div>
 
-        <div className="bg-ink-900 border border-line hover:border-primary/40 rounded-3xl p-8 space-y-4 shadow-xl transition">
+        <motion.div variants={cardVariants} className="bg-ink-900 border border-line hover:border-primary/40 rounded-3xl p-8 space-y-4 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
           <div className="w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center border border-primary/30">
             <Compass className="w-6 h-6" />
           </div>
@@ -55,9 +77,9 @@ export function WhyMadcoSection() {
               <span>Accurate room proportions and spatial flow</span>
             </li>
           </ul>
-        </div>
+        </motion.div>
 
-        <div className="bg-ink-900 border border-line hover:border-tour/40 rounded-3xl p-8 space-y-4 shadow-xl transition">
+        <motion.div variants={cardVariants} className="bg-ink-900 border border-line hover:border-tour/40 rounded-3xl p-8 space-y-4 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-tour/10">
           <div className="w-12 h-12 rounded-2xl bg-tour/15 text-tour flex items-center justify-center border border-tour/30">
             <Camera className="w-6 h-6" />
           </div>
@@ -75,8 +97,8 @@ export function WhyMadcoSection() {
               <span>Direct WhatsApp & phone connect</span>
             </li>
           </ul>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

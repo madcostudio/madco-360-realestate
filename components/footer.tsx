@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Building2, Compass, ExternalLink } from 'lucide-react';
 
 export function Footer() {
@@ -8,10 +9,13 @@ export function Footer() {
         {/* Col 1: Brand & Studio Lockup */}
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
-            <span className="font-bold text-2xl text-text-hi font-sans">Mad.co</span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold/15 text-gold border border-gold/30">
-              360° SPATIAL
-            </span>
+            <Image 
+              src="/madco-logo.png" 
+              alt="Mad.co Estates 360 Spatial" 
+              width={160} 
+              height={48} 
+              className="w-auto h-8 object-contain drop-shadow-md opacity-90"
+            />
           </div>
           <p className="text-text-lo text-xs leading-relaxed">
             India's premiere 360° virtual walkthrough marketplace. Every listing is photographed room-to-room and verified in person by Mad.co Studio.

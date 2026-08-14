@@ -61,6 +61,8 @@ export default function AdminDashboardPage() {
     description: '',
     cover_image: '',
     featured: false,
+    contact_phone: '',
+    map_url: '',
   });
   const [savingPropertyEdit, setSavingPropertyEdit] = useState(false);
   const [propertyEditError, setPropertyEditError] = useState<string | null>(null);
@@ -210,6 +212,8 @@ export default function AdminDashboardPage() {
       description: prop.description || '',
       cover_image: prop.cover_image || '',
       featured: Boolean(prop.featured),
+      contact_phone: prop.contact_phone || '',
+      map_url: prop.map_url || '',
     });
     setPropertyEditError(null);
   };
@@ -676,12 +680,12 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-1">
-                    Price (₹) <span className="text-brass font-mono ml-1">₹{(editForm.price / 10000000).toFixed(2)} Cr</span>
+                    Price (₹) <span className="text-gold font-normal">*(0 for "Price on Request")*</span>
                   </label>
                   <input
                     type="number"
                     required
-                    min={100000}
+                    min={0}
                     step={50000}
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
@@ -716,16 +720,69 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              {/* Cover Image URL */}
+              {/* Thumbnail Image URL & Upload */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Cover Image URL</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Thumbnail / Hero Picture (Cover Image)</label>
+                <div className="flex flex-col space-y-3">
+                  <div className="flex space-x-3 items-center">
+                    <input
+                      type="url"
+                      value={editForm.cover_image}
+                      onChange={(e) => setEditForm({ ...editForm, cover_image: e.target.value })}
+                      placeholder="Paste Image URL..."
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brass transition"
+                    />
+                    <span className="text-xs text-slate-400 font-bold">OR</span>
+                    <label className="cursor-pointer bg-slate-900 border border-slate-700 hover:border-brass px-4 py-2 rounded-xl text-xs text-slate-300 hover:text-white transition whitespace-nowrap">
+                      Upload from Device
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            if (event.target?.result) {
+                              setEditForm({ ...editForm, cover_image: event.target.result as string });
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  {editForm.cover_image && (
+                    <img src={editForm.cover_image} alt="Thumbnail Preview" className="h-16 w-24 object-cover rounded-lg shadow-lg border border-slate-700" />
+                  )}
+                </div>
+              </div>
+
+              {/* Publisher WhatsApp */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Publisher WhatsApp / Phone Number</label>
+                <input
+                  type="tel"
+                  value={editForm.contact_phone || ''}
+                  onChange={(e) => setEditForm({ ...editForm, contact_phone: e.target.value })}
+                  placeholder="e.g. +91 98765 43210"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brass transition"
+                />
+                <p className="text-[10px] text-slate-500 mt-1">Users clicking &quot;Send Direct Lead Enquiry&quot; will be directed to this WhatsApp number.</p>
+              </div>
+
+              {/* Map Location Link */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Map Location Link</label>
                 <input
                   type="url"
-                  value={editForm.cover_image || ''}
-                  onChange={(e) => setEditForm({ ...editForm, cover_image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brass font-mono"
+                  value={editForm.map_url || ''}
+                  onChange={(e) => setEditForm({ ...editForm, map_url: e.target.value })}
+                  placeholder="e.g. https://maps.google.com/?q=..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brass transition"
                 />
+                <p className="text-[10px] text-slate-500 mt-1">Leave blank to use the default search query generated from the address.</p>
               </div>
 
               {/* Description */}

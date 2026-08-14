@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyData } from '@/lib/mock-data';
 import { Compass, MapPin, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface PropertyCardProps {
   property: PropertyData;
@@ -12,7 +13,11 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, className = '', imageHeight = 'h-56' }: PropertyCardProps) {
-  const formattedPrice = property.price >= 10000000
+  const isPriceOnRequest = property.price === 0;
+
+  const formattedPrice = isPriceOnRequest
+    ? 'Price on Request'
+    : property.price >= 10000000
     ? `₹${(property.price / 10000000).toFixed(2)} Cr`
     : property.price >= 100000
     ? `₹${(property.price / 100000).toFixed(2)} L`
@@ -23,8 +28,8 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
       }).format(property.price);
 
   const estimatedSqft = property.bhk === 1 ? 850 : property.bhk === 2 ? 1450 : property.bhk === 3 ? 2100 : 3450;
-  const rateNum = Math.round(property.price / estimatedSqft);
-  const ratePerSqft = `₹${new Intl.NumberFormat('en-IN').format(rateNum)}/sq.ft`;
+  const rateNum = isPriceOnRequest ? 0 : Math.round(property.price / estimatedSqft);
+  const ratePerSqft = isPriceOnRequest ? null : `₹${new Intl.NumberFormat('en-IN').format(rateNum)}/sq.ft`;
 
   // Locality: e.g. "URWA, MANGALORE" or "BANDRA WEST, MUMBAI"
   const addressParts = (property.address || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -51,11 +56,18 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
   const hasTour = Boolean(property.external_tour_url && property.external_tour_url.trim().length > 0);
 
   return (
-    <div
-      className={`bg-ink-900 border border-line rounded-2xl overflow-hidden shadow-xl group hover:border-brass/40 transition duration-300 flex flex-col justify-between ${className}`}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={`relative bg-ink-900 border border-line rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-brass/20 group hover:border-brass/40 transition-all duration-500 flex flex-col justify-between hover:-translate-y-1.5 ${className}`}
     >
+      {/* Full-bleed link to make the entire card clickable */}
+      <Link href={`/property/${property.slug}`} className="absolute inset-0 z-0" aria-label={`View ${property.title}`} prefetch={true} />
+
       {/* Card Image & Badges Overlay */}
-      <div className={`relative ${imageHeight} w-full overflow-hidden`}>
+      <div className={`relative ${imageHeight} w-full overflow-hidden z-10 pointer-events-none`}>
         <Image
           src={safeCover}
           alt={property.title}
@@ -80,18 +92,30 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         )}
 
         {/* Bottom Left: Large White Price + Gold Rate Pill */}
-        <div className="absolute bottom-3 left-3 z-10">
-          <div className="text-xl sm:text-2xl font-bold font-mono text-white leading-tight drop-shadow-md">
-            {formattedPrice}
-          </div>
-          <div className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-gold/20 backdrop-blur-md border border-gold/40 text-gold mt-1 shadow-sm">
-            {ratePerSqft}
-          </div>
+        <div className="absolute bottom-3 left-3 z-20 flex flex-col items-start pointer-events-auto">
+          {isPriceOnRequest ? (
+            <Link
+              href={property.contact_phone ? `https://wa.me/${property.contact_phone.replace(/[^0-9]/g, '')}` : `#`}
+              target="_blank"
+              className="text-xl sm:text-2xl font-bold font-sans text-gold leading-tight drop-shadow-md hover:underline cursor-pointer bg-ink-950/60 px-2 py-0.5 rounded-lg"
+            >
+              {formattedPrice}
+            </Link>
+          ) : (
+            <div className="text-xl sm:text-2xl font-bold font-mono text-white leading-tight drop-shadow-md">
+              {formattedPrice}
+            </div>
+          )}
+          {ratePerSqft && (
+            <div className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-gold/20 backdrop-blur-md border border-gold/40 text-gold mt-1 shadow-sm">
+              {ratePerSqft}
+            </div>
+          )}
         </div>
 
         {/* Bottom Right: Orange/Amber Gradient Walk 360° Button (Only if hasTour) */}
         {hasTour && (
-          <div className="absolute bottom-3 right-3 z-10">
+          <div className="absolute bottom-3 right-3 z-20 pointer-events-auto">
             <Link
               href={`/property/${property.slug}/tour`}
               className="py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-ink-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-md shadow-amber-500/20 hover:scale-[1.02]"
@@ -104,7 +128,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
       </div>
 
       {/* Card Body */}
-      <div className="p-5 space-y-3">
+      <div className="p-5 space-y-3 relative z-10 pointer-events-none">
         {/* Locality line: Purple MapPin + Uppercase Locality + · + Property Type */}
         <div className="flex items-center space-x-1.5 text-xs truncate">
           <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -118,7 +142,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         {/* Title & Subtitle */}
         <div>
           <h3 className="text-lg font-serif font-bold text-text-hi line-clamp-1 group-hover:text-gold transition">
-            <Link href={`/property/${property.slug}`}>{property.title}</Link>
+            {property.title}
           </h3>
           <p className="text-text-lo text-xs mt-1 line-clamp-1">
             {subtitle}
@@ -126,20 +150,19 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         </div>
 
         {/* Verified line row at bottom with hairline divider */}
-        <div className="pt-3 border-t border-line flex items-center justify-between">
+        <div className="pt-3 border-t border-line flex items-center justify-between pointer-events-auto">
           <div className="flex items-center space-x-1.5 text-xs text-text-lo font-medium">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Verified Mad.co Tour</span>
           </div>
-          <Link
-            href={`/property/${property.slug}`}
-            className="text-primary hover:text-primary-hover text-xs font-semibold flex items-center space-x-1 transition"
+          <span
+            className="text-primary group-hover:text-gold text-xs font-semibold flex items-center space-x-1 transition"
           >
             <span>Full Specs</span>
-            <span>→</span>
-          </Link>
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

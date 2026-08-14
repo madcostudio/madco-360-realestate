@@ -51,6 +51,8 @@ export interface PropertyData {
   description?: string;
   owner_id?: string;
   featured?: boolean;
+  contact_phone?: string;
+  map_url?: string;
 }
 
 export function hasVerified360Tour(property?: PropertyData | null): boolean {

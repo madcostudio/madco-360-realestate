@@ -60,36 +60,13 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login', redirectTo }:
         }
         setSuccessMsg('Account created! Check your email to confirm, then sign in.');
       } else {
-        // Try real Supabase sign in first
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        
-        // If Supabase fetch fails (e.g. placeholder env vars or network unreachable), use Demo Admin fallback
-        if (error && (error.message.includes('Failed to fetch') || error.message.includes('fetch failed') || process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('your-project'))) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('madco_demo_user', JSON.stringify({
-              id: '00000000-0000-0000-0000-000000000001',
-              email: email || 'mad.coad@gmail.com',
-              full_name: 'Admin User',
-              role: 'admin',
-              is_owner: true,
-            }));
-            document.cookie = 'madco_demo_role=admin; path=/';
-          }
-          setSuccessMsg('Signed in (Demo Admin Mode)! Redirecting to command center...');
-          setTimeout(() => {
-            onClose();
-            router.refresh();
-            if (redirectTo) {
-              router.push(redirectTo);
-            } else {
-              router.push('/admin/dashboard');
-            }
-          }, 500);
-          return;
-        }
-
         if (error) {
-          setErrorMsg(error.message);
+          if (error.message.includes('Failed to fetch') || error.message.includes('fetch failed')) {
+            setErrorMsg('Unable to reach the backend server. Please configure a valid NEXT_PUBLIC_SUPABASE_URL and anon key in .env.local.');
+          } else {
+            setErrorMsg(error.message);
+          }
           return;
         }
         setSuccessMsg('Signed in!');
@@ -290,39 +267,6 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login', redirectTo }:
               <LogIn className="w-4 h-4" />
               <span>{isPending ? 'Processing...' : tab === 'login' ? 'Sign In' : 'Create Account'}</span>
             </button>
-
-            {tab === 'login' && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem('madco_demo_user', JSON.stringify({
-                      id: '00000000-0000-0000-0000-000000000001',
-                      email: email || 'mad.coad@gmail.com',
-                      full_name: 'Admin User',
-                      role: 'admin',
-                      is_owner: true,
-                    }));
-                    document.cookie = 'madco_demo_role=admin; path=/';
-                  }
-                  setSuccessMsg('Signed in as Admin (Demo Access)!');
-                  setTimeout(() => {
-                    onClose();
-                    router.refresh();
-                    if (redirectTo) {
-                      router.push(redirectTo);
-                    } else {
-                      router.push('/admin/dashboard');
-                    }
-                  }, 400);
-                }}
-                className="w-full py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-brass text-slate-300 hover:text-white font-semibold text-xs transition flex items-center justify-center space-x-2 mt-2"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-brass" />
-                <span>Instant Sign In (Demo Admin Access)</span>
-              </button>
-            )}
           </form>
         )}
 
