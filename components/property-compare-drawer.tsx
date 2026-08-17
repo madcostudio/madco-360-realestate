@@ -87,7 +87,11 @@ export function PropertyCompareDrawer({ properties }: PropertyCompareDrawerProps
                 >
                   <div className="space-y-2">
                     <span className="text-xl font-bold font-mono text-brass block">
-                      ₹{(item.price / 10000000).toFixed(2)} Cr
+                      {item.price === 0 ? (
+                        <span className="font-sans text-gold">Price on Request</span>
+                      ) : (
+                        `₹${(item.price / 10000000).toFixed(2)} Cr`
+                      )}
                     </span>
                     <h4 className="font-serif font-bold text-base text-white">{item.title}</h4>
                     <p className="text-xs text-slate-400">{item.address}</p>

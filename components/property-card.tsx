@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyData } from '@/lib/mock-data';
-import { Compass, MapPin, CheckCircle2 } from 'lucide-react';
+import { Compass, MapPin, CheckCircle2, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface PropertyCardProps {
@@ -60,7 +60,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5 }}
       className={`relative bg-ink-900 border border-line rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-brass/20 group hover:border-brass/40 transition-all duration-500 flex flex-col justify-between hover:-translate-y-1.5 ${className}`}
     >
       {/* Full-bleed link to make the entire card clickable */}
@@ -97,9 +97,10 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
             <Link
               href={property.contact_phone ? `https://wa.me/${property.contact_phone.replace(/[^0-9]/g, '')}` : `#`}
               target="_blank"
-              className="text-xl sm:text-2xl font-bold font-sans text-gold leading-tight drop-shadow-md hover:underline cursor-pointer bg-ink-950/60 px-2 py-0.5 rounded-lg"
+              className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold font-sans text-slate-950 bg-gold hover:bg-gold/90 px-3 py-1.5 rounded-lg border border-gold/50 shadow-lg shadow-gold/20 transition-transform hover:scale-105"
             >
-              {formattedPrice}
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>{formattedPrice}</span>
             </Link>
           ) : (
             <div className="text-xl sm:text-2xl font-bold font-mono text-white leading-tight drop-shadow-md">

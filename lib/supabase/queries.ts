@@ -87,12 +87,14 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyData | nu
       let rawDesc = data.description || '';
       let contact_phone = '';
       let map_url = '';
+      let carpet_area = '';
       const metaMatch = rawDesc.match(/<!-- META: (.*?) -->/);
       if (metaMatch) {
         try {
           const meta = JSON.parse(metaMatch[1]);
           contact_phone = meta.contact_phone || '';
           map_url = meta.map_url || '';
+          carpet_area = meta.carpet_area || '';
         } catch (e) {}
         rawDesc = rawDesc.replace(metaMatch[0], '').trim();
       }
@@ -102,6 +104,7 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyData | nu
         description: rawDesc,
         contact_phone: contact_phone || data.contact_phone,
         map_url: map_url,
+        carpet_area: carpet_area,
       } as PropertyData;
     }
 
@@ -198,7 +201,7 @@ export async function searchNearbyProperties(options: {
         bhk_filter: bhk,
       });
 
-      if (!error && data) {
+      if (!error && data && data.length > 0) {
         let results = data as PropertyData[];
         if (query && query.trim()) {
           const q = query.toLowerCase();
@@ -223,8 +226,12 @@ export async function searchNearbyProperties(options: {
     if (bhk && bhk !== 'all') {
       dbQuery = dbQuery.eq('bhk', parseInt(bhk, 10));
     }
-    if (city && city !== 'All Cities') {
-      dbQuery = dbQuery.ilike('city', `%${city}%`);
+    if (city && city !== 'All Cities' && city !== 'All India') {
+      if (city.toLowerCase() === 'mangalore' || city.toLowerCase() === 'mangaluru') {
+        dbQuery = dbQuery.or(`city.ilike.%mangalore%,city.ilike.%mangaluru%`);
+      } else {
+        dbQuery = dbQuery.ilike('city', `%${city}%`);
+      }
     }
 
     const { data: fallbackData, error: fallbackError } = await dbQuery;
@@ -250,7 +257,15 @@ export async function searchNearbyProperties(options: {
   return DEMO_PROPERTIES_LIST.filter((p) => {
     if (p.status !== 'published') return false;
     if (bhk !== 'all' && p.bhk.toString() !== bhk) return false;
-    if (city && city !== 'All Cities' && p.city.toLowerCase() !== city.toLowerCase()) return false;
+    if (city && city !== 'All Cities' && city !== 'All India') {
+      const isMangalore = city.toLowerCase() === 'mangalore' || city.toLowerCase() === 'mangaluru';
+      const propCity = p.city.toLowerCase();
+      if (isMangalore) {
+        if (!propCity.includes('mangalore') && !propCity.includes('mangaluru')) return false;
+      } else {
+        if (!propCity.includes(city.toLowerCase())) return false;
+      }
+    }
     if (query && query.trim()) {
       const q = query.toLowerCase();
       return (

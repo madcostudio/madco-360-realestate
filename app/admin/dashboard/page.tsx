@@ -10,6 +10,7 @@ import {
   updatePropertyTourUrlAction,
   updatePropertyDetailsAction,
   UpdatePropertyDetailsPayload,
+  uploadPropertyImageAction,
 } from '@/app/actions/admin-moderation';
 import Link from 'next/link';
 import {
@@ -31,6 +32,7 @@ import {
   Link2,
   Pencil,
 } from 'lucide-react';
+import { ImageCropper } from '@/components/image-cropper';
 
 export default function AdminDashboardPage() {
   const [properties, setProperties] = useState<PropertyData[]>([]);
@@ -50,6 +52,7 @@ export default function AdminDashboardPage() {
 
   // Edit Listing state
   const [editingProperty, setEditingProperty] = useState<PropertyData | null>(null);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<UpdatePropertyDetailsPayload>({
     title: '',
     price: 0,
@@ -62,6 +65,7 @@ export default function AdminDashboardPage() {
     cover_image: '',
     featured: false,
     contact_phone: '',
+    carpet_area: '',
     map_url: '',
   });
   const [savingPropertyEdit, setSavingPropertyEdit] = useState(false);
@@ -213,6 +217,7 @@ export default function AdminDashboardPage() {
       cover_image: prop.cover_image || '',
       featured: Boolean(prop.featured),
       contact_phone: prop.contact_phone || '',
+      carpet_area: prop.carpet_area || '',
       map_url: prop.map_url || '',
     });
     setPropertyEditError(null);
@@ -225,6 +230,15 @@ export default function AdminDashboardPage() {
     setPropertyEditError(null);
 
     try {
+      if (editForm.contact_phone) {
+        const phoneClean = editForm.contact_phone.replace(/[^0-9]/g, '');
+        if (phoneClean.length < 10) {
+          setPropertyEditError('Agent Phone Number must contain at least 10 digits.');
+          setSavingPropertyEdit(false);
+          return;
+        }
+      }
+
       const res = await updatePropertyDetailsAction(editingProperty.id, editForm);
       if (!res.success) {
         setPropertyEditError(res.error || 'Failed to update property listing details.');
@@ -745,7 +759,7 @@ export default function AdminDashboardPage() {
                           const reader = new FileReader();
                           reader.onload = (event) => {
                             if (event.target?.result) {
-                              setEditForm({ ...editForm, cover_image: event.target.result as string });
+                              setCropImageSrc(event.target.result as string);
                             }
                           };
                           reader.readAsDataURL(file);
@@ -770,6 +784,17 @@ export default function AdminDashboardPage() {
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brass transition"
                 />
                 <p className="text-[10px] text-slate-500 mt-1">Users clicking &quot;Send Direct Lead Enquiry&quot; will be directed to this WhatsApp number.</p>
+              </div>
+              {/* Carpet Area */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Carpet Area (e.g. 1,680 sq.ft.)</label>
+                <input
+                  type="text"
+                  value={editForm.carpet_area || ''}
+                  onChange={(e) => setEditForm({ ...editForm, carpet_area: e.target.value })}
+                  placeholder="e.g. 1,680 sq.ft."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brass transition"
+                />
               </div>
 
               {/* Map Location Link */}
@@ -837,6 +862,40 @@ export default function AdminDashboardPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {cropImageSrc && (
+        <ImageCropper
+          imageSrc={cropImageSrc}
+          aspectRatio={16 / 9}
+          onCancel={() => setCropImageSrc(null)}
+          onCropDone={async (croppedImageUrl) => {
+            if (!editingProperty) return;
+            setSavingPropertyEdit(true);
+            try {
+              const res = await fetch(croppedImageUrl);
+              const blob = await res.blob();
+              const file = new File([blob], 'cropped-image.jpg', { type: 'image/jpeg' });
+              
+              const formData = new FormData();
+              formData.append('coverFile', file);
+              formData.append('propertyId', editingProperty.id);
+              
+              const uploadRes = await uploadPropertyImageAction(formData);
+              if (uploadRes.success && uploadRes.url) {
+                setEditForm({ ...editForm, cover_image: uploadRes.url });
+              } else {
+                setPropertyEditError(uploadRes.error || 'Failed to upload cropped image.');
+              }
+            } catch (err) {
+              console.error(err);
+              setPropertyEditError('An error occurred while uploading the cropped image.');
+            } finally {
+              setSavingPropertyEdit(false);
+              setCropImageSrc(null);
+            }
+          }}
+        />
       )}
     </main>
   );

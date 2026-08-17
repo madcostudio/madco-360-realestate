@@ -36,7 +36,7 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-ink-950 text-text-hi">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-20 pb-28 px-6 sm:px-12 max-w-7xl mx-auto border-b border-line">
+      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-28 px-6 sm:px-12 max-w-7xl mx-auto border-b border-line">
         {/* Subtle Ambient Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 right-10 w-[300px] h-[300px] bg-gold/10 rounded-full blur-3xl pointer-events-none" />

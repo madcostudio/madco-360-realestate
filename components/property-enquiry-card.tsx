@@ -13,7 +13,7 @@ interface PropertyEnquiryCardProps {
 
 export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactPhone }: PropertyEnquiryCardProps) {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('+91 ');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(`Hi, I am interested in "${propertyTitle}" and would like to arrange a private walkthrough.`);
   const [loading, setLoading] = useState(false);

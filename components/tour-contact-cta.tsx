@@ -8,14 +8,15 @@ import { submitEnquiryAction } from '@/app/actions/submit-enquiry';
 interface TourContactCtaProps {
   propertyId: string;
   propertyTitle: string;
+  contactPhone?: string;
 }
 
-export function TourContactCta({ propertyId, propertyTitle }: TourContactCtaProps) {
+export function TourContactCta({ propertyId, propertyTitle, contactPhone }: TourContactCtaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('+91 ');
   const [message, setMessage] = useState('I just completed the 360° virtual tour and would like to schedule a private viewing.');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,6 +33,13 @@ export function TourContactCta({ propertyId, propertyTitle }: TourContactCtaProp
     await trackEvent('tour_enquiry_from_tour', propertyId, { name, phone, message });
     setLoading(false);
     setSubmitted(true);
+    
+    if (contactPhone) {
+      const whatsappText = `Hi, my name is ${name}. I am interested in "${propertyTitle}".\n\n${message}`;
+      const waUrl = `https://wa.me/${contactPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappText)}`;
+      window.open(waUrl, '_blank');
+    }
+
     setTimeout(() => {
       setSubmitted(false);
       setIsOpen(false);

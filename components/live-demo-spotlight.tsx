@@ -81,9 +81,15 @@ export function LiveDemoSpotlight({ property: initialProperty }: LiveDemoSpotlig
             <span className="text-xs font-bold text-white">
               {property.title}
             </span>
-            <span className="text-xs font-mono text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/30">
-              ₹{(property.price / 10000000).toFixed(2)} Cr
-            </span>
+            {property.price === 0 ? (
+              <span className="text-xs font-mono text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/30">
+                Price on Request
+              </span>
+            ) : (
+              <span className="text-xs font-mono text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/30">
+                ₹{(property.price / 10000000).toFixed(2)} Cr
+              </span>
+            )}
           </div>
 
           <div className="flex items-center space-x-3 text-xs text-text-lo font-mono">
@@ -121,27 +127,27 @@ export function LiveDemoSpotlight({ property: initialProperty }: LiveDemoSpotlig
             />
           )}
 
-          {/* Bottom HUD Overlay */}
-          <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-ink-950 via-ink-950/80 to-transparent flex flex-wrap items-center justify-between gap-3 pointer-events-none z-20">
-            <div className="pointer-events-auto flex items-center space-x-2">
-              <span className="badge-tour-verified text-xs">
-                <Compass className="w-3.5 h-3.5 text-gold" />
-                <span>360° VERIFIED BY MAD.CO STUDIO</span>
-              </span>
-              <span className="hidden sm:inline-flex text-xs text-text-lo bg-ink-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-line">
-                📍 {property.address}, {property.city}
-              </span>
-            </div>
-
-            <div className="pointer-events-auto flex items-center space-x-2">
-              <Link
-                href={`/property/${property.slug}`}
-                className="text-xs font-bold text-gold hover:text-white underline bg-ink-950/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-gold/30 hover:border-gold transition shadow-md"
-              >
-                View Property Details &amp; Floorplan →
-              </Link>
-            </div>
+          {/* Top Right Badge */}
+          <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+            <span className="badge-tour-verified text-[10px] sm:text-xs shadow-lg">
+              <Compass className="w-3.5 h-3.5 text-gold" />
+              <span>360° VERIFIED BY MAD.CO STUDIO</span>
+            </span>
           </div>
+        </div>
+
+        {/* Bottom Footer Actions */}
+        <div className="bg-ink-950/90 backdrop-blur-xl border-t border-line px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+          <span className="hidden sm:inline-flex text-xs text-text-lo bg-ink-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-line">
+            📍 {property.address}, {property.city}
+          </span>
+          <Link
+            href={`/property/${property.slug}`}
+            className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-brass to-gold hover:from-brass-hover hover:to-gold-hover text-ink-950 font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition shadow-lg shadow-gold/20 hover:scale-[1.02] ml-auto"
+          >
+            <Layers className="w-4 h-4" />
+            <span>View Property Details &amp; Floorplan</span>
+          </Link>
         </div>
       </div>
     </section>

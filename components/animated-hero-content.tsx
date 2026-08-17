@@ -19,7 +19,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }, // spring-like easing
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
 export function AnimatedHeroContent({ heroHeading, heroSubcopy }: AnimatedHeroContentProps) {
@@ -31,13 +31,13 @@ export function AnimatedHeroContent({ heroHeading, heroSubcopy }: AnimatedHeroCo
       className="relative z-10 max-w-4xl mx-auto text-center space-y-8"
     >
       {/* Gold Pill Badge */}
-      <motion.div variants={itemVariants} className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-bold font-mono uppercase tracking-wider">
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>MAD.CO ESTATES • 360° VERIFIED REAL ESTATE MARKETPLACE</span>
+      <motion.div variants={itemVariants} className="inline-flex flex-wrap justify-center text-center items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-[9px] sm:text-xs font-bold font-mono uppercase tracking-wider max-w-[90vw] mx-auto">
+        <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+        <span className="break-words text-center">MAD.CO ESTATES • 360° VERIFIED REAL ESTATE MARKETPLACE</span>
       </motion.div>
 
       {/* Solid Color Headline */}
-      <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-text-hi tracking-tight leading-[1.08]">
+      <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-text-hi tracking-tight leading-[1.08] px-2 sm:px-0">
         {heroHeading}
       </motion.h1>
 

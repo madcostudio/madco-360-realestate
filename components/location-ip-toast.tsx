@@ -2,85 +2,133 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation } from '@/lib/location-context';
-import { MapPin, X, Check } from 'lucide-react';
+import { MapPin, X, Navigation, Loader2 } from 'lucide-react';
 
 export function LocationIpToast() {
   const { city, setLocation } = useLocation();
-  const [suggestedCity, setSuggestedCity] = useState<string | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [detecting, setDetecting] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
 
   useEffect(() => {
-    // If user already picked a city or dismissed, do not prompt
-    if (city || dismissed) return;
+    // If user already picked a city, do not prompt
+    if (city) return;
 
     // Check if dismissed previously in session
     const hasDismissed = sessionStorage.getItem('dismissed_location_prompt');
     if (hasDismissed) return;
 
-    // Fetch real location based on IP
-    const detectLocation = async () => {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (!res.ok) throw new Error('Network response was not ok');
-        const data = await res.json();
-        if (data && data.city) {
-          setSuggestedCity(data.city);
-        }
-      } catch (error) {
-        console.error('Failed to detect location:', error);
-      }
-    };
-    
-    detectLocation();
-  }, [city, dismissed]);
+    // Wait a brief moment before showing the prompt so it feels intentional
+    const timer = setTimeout(() => setShowPrompt(true), 2500);
+    return () => clearTimeout(timer);
+  }, [city]);
 
-  if (!suggestedCity || city || dismissed) return null;
+  if (!showPrompt || city) return null;
 
-  const handleAccept = () => {
-    setLocation({ city: suggestedCity });
-    setDismissed(true);
+  const handleDismiss = () => {
+    setShowPrompt(false);
     sessionStorage.setItem('dismissed_location_prompt', 'true');
   };
 
-  const handleDismiss = () => {
-    setDismissed(true);
-    sessionStorage.setItem('dismissed_location_prompt', 'true');
+  const handleDetectLocation = () => {
+    setGeoError(null);
+    setDetecting(true);
+
+    if (!navigator.geolocation) {
+      setGeoError('Geolocation is not supported by your browser.');
+      setDetecting(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const detectedCity =
+              data.address?.city ||
+              data.address?.town ||
+              data.address?.suburb ||
+              data.address?.state_district ||
+              'Your Location';
+
+            setLocation({
+              city: detectedCity,
+              locality: data.address?.suburb || data.address?.neighbourhood,
+              lat,
+              lng,
+            });
+            setShowPrompt(false);
+          }
+        } catch (err) {
+          setLocation({ city: 'Current Location', lat, lng });
+          setShowPrompt(false);
+        } finally {
+          setDetecting(false);
+        }
+      },
+      (error) => {
+        setDetecting(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          setGeoError('Location permission denied.');
+        } else {
+          setGeoError('Unable to detect location.');
+        }
+      }
+    );
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-sm bg-slate-900/95 backdrop-blur-md border border-brass/40 rounded-2xl p-4 shadow-2xl text-white animate-in slide-in-from-bottom-5">
-      <div className="flex items-start justify-between space-x-3">
-        <div className="flex items-center space-x-2 text-brass text-xs font-bold font-mono uppercase tracking-wider">
-          <MapPin className="w-4 h-4 text-brass" />
-          <span>Location Detection</span>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+      <div className="bg-estate-card border border-brass/40 text-white w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 relative">
         <button
           onClick={handleDismiss}
-          className="text-slate-400 hover:text-white transition p-1"
-          aria-label="Dismiss location suggestion"
+          className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white transition"
+          aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
-      </div>
+        
+        <div className="w-12 h-12 rounded-2xl bg-brass/10 border border-brass/20 flex items-center justify-center mb-4 text-brass">
+          <MapPin className="w-6 h-6" />
+        </div>
+        
+        <h3 className="font-serif font-bold text-xl mb-2">Explore Nearby Spaces</h3>
+        <p className="text-slate-400 text-sm leading-relaxed mb-6">
+          Allow location access to instantly discover verified 360° virtual tours of luxury properties in your current city.
+        </p>
 
-      <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-        Are you browsing 360° verified luxury spaces in <strong className="text-white">{suggestedCity}</strong>?
-      </p>
+        {geoError && (
+          <p className="text-red-400 text-xs mb-4">{geoError}</p>
+        )}
 
-      <div className="flex items-center space-x-2 mt-3.5">
-        <button
-          onClick={handleAccept}
-          className="px-3.5 py-1.5 rounded-xl bg-brass hover:bg-brass-hover text-slate-950 text-xs font-bold transition flex items-center space-x-1"
-        >
-          <Check className="w-3.5 h-3.5" />
-          <span>Yes, set {suggestedCity}</span>
-        </button>
-        <button
-          onClick={handleDismiss}
-          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition"
-        >
-          Browse All Cities
-        </button>
+        <div className="flex flex-col space-y-3">
+          <button
+            onClick={handleDetectLocation}
+            disabled={detecting}
+            className="w-full py-3 rounded-xl bg-brass hover:bg-brass-hover text-slate-950 font-bold transition flex items-center justify-center space-x-2 disabled:opacity-70"
+          >
+            {detecting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Navigation className="w-4 h-4" />
+            )}
+            <span>{detecting ? 'Detecting...' : 'Detect My Location'}</span>
+          </button>
+          
+          <button
+            onClick={handleDismiss}
+            className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition"
+          >
+            Browse All Cities
+          </button>
+        </div>
       </div>
     </div>
   );

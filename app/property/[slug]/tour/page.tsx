@@ -8,6 +8,8 @@ import { notFound } from 'next/navigation';
 import { TourHeaderOverlay } from '@/components/tour-header-overlay';
 import { TourContactCta } from '@/components/tour-contact-cta';
 
+export const revalidate = 0;
+
 interface TourPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -30,7 +32,7 @@ export default async function TourPage({ params }: TourPageProps) {
   await trackEvent('tour_open', activeProperty.id, { slug: activeProperty.slug });
 
   return (
-    <div className="fixed inset-0 bg-slate-950 text-white overflow-hidden select-none">
+    <div className="fixed inset-0 bg-slate-950 text-white overflow-hidden select-none z-[100]">
       {/* 360° Tour Surface */}
       {hasExternalTour ? (
         <ExternalTourFrame
@@ -72,10 +74,11 @@ export default async function TourPage({ params }: TourPageProps) {
         price={activeProperty.price}
         address={activeProperty.address}
         slug={activeProperty.slug}
+        contactPhone={activeProperty.contact_phone}
       />
 
       {/* Floating Bottom Contact Overlay */}
-      <TourContactCta propertyId={activeProperty.id} propertyTitle={activeProperty.title} />
+      <TourContactCta propertyId={activeProperty.id} propertyTitle={activeProperty.title} contactPhone={activeProperty.contact_phone} />
     </div>
   );
 }

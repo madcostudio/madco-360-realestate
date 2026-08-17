@@ -35,59 +35,62 @@
   border: 1px solid var(--line);
 }
 
-.btn-primary {
-  background-color: #6366F1;
-  color: #FFFFFF;
-  font-weight: 700;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 150ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+@layer components {
+  .btn-primary {
+    background-color: #6366F1;
+    color: #FFFFFF;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary:hover {
+    background-color: #4F46E5;
+  }
+
+  .btn-tour {
+    background-color: #F59E0B;
+    color: #0B0D10;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-tour:hover {
+    background-color: #D97706;
+    color: #FFFFFF;
+  }
+
+  .btn-outline-gold {
+    background-color: transparent;
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-outline-gold:hover {
+    background-color: rgba(212, 175, 55, 0.15);
+    color: #F5F3EE;
+  }
 }
 
-.btn-primary:hover {
-  background-color: #4F46E5;
-}
-
-.btn-tour {
-  background-color: #F59E0B;
-  color: #0B0D10;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  transition: all 150ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-tour:hover {
-  background-color: #D97706;
-  color: #FFFFFF;
-}
-
-.btn-outline-gold {
-  background-color: transparent;
-  color: #D4AF37;
-  border: 1px solid #D4AF37;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 150ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-outline-gold:hover {
-  background-color: rgba(212, 175, 55, 0.15);
-  color: #F5F3EE;
-}
 
 .btn-outline-brass {
   background-color: transparent;

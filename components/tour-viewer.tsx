@@ -74,6 +74,12 @@ export function TourViewer({
       return levels.med || levels.low || levels.preview;
     };
 
+    // Helper to truncate long filenames (e.g. from camera)
+    const formatSceneName = (name: string) => {
+      const shortName = name.replace(/(_exported)?(\.[a-zA-Z0-9]+)?$/i, '');
+      return shortName.length > 25 ? shortName.substring(0, 25) + '...' : shortName;
+    };
+
     // Instantiate Photo Sphere Viewer
     const viewer = new Viewer({
       container: containerRef.current,
@@ -84,13 +90,10 @@ export function TourViewer({
       navbar: [
         'zoom',
         'move',
-        'download',
         'markers',
         'gyroscope',
-        'caption',
         'fullscreen',
       ],
-      caption: `Madco Estates 360° Walkthrough — <b>${startScene.name}</b>`,
       plugins: [
         [
           VirtualTourPlugin,
@@ -123,7 +126,6 @@ export function TourViewer({
       id: scene.id,
       panorama: getAdaptiveImage(scene.pano_levels),
       name: scene.name,
-      caption: `Madco Estates 360° Walkthrough — <b>${scene.name}</b>`,
       defaultYaw: scene.initial_yaw,
       defaultPitch: scene.initial_pitch,
     }));
@@ -229,7 +231,7 @@ export function TourViewer({
         <div className="bg-estate-card/90 backdrop-blur-md border border-brass/30 text-white px-4 py-2 rounded-full shadow-lg flex items-center space-x-2">
           <span className="w-2.5 h-2.5 rounded-full bg-fern animate-pulse" />
           <span className="text-xs uppercase tracking-wider text-brass font-medium">Active Room</span>
-          <span className="text-slate-300 font-bold text-sm">| {currentSceneName}</span>
+          <span className="text-slate-300 font-bold text-[10px] sm:text-sm truncate max-w-[120px] sm:max-w-[200px]">| {currentSceneName}</span>
         </div>
       </div>
 

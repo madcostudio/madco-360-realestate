@@ -12,9 +12,9 @@ export function Footer() {
             <Image 
               src="/madco-logo.png" 
               alt="Mad.co Estates 360 Spatial" 
-              width={160} 
-              height={48} 
-              className="w-auto h-8 object-contain drop-shadow-md opacity-90"
+              width={200} 
+              height={60} 
+              className="w-auto h-10 lg:h-12 object-contain drop-shadow-md opacity-90"
             />
           </div>
           <p className="text-text-lo text-xs leading-relaxed">

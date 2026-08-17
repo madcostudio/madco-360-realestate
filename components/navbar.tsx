@@ -89,7 +89,7 @@ export function Navbar() {
               alt="Mad.co Estates 360 Spatial" 
               width={200} 
               height={60} 
-              className="w-auto h-8 sm:h-10 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+              className="w-auto h-9 sm:h-12 lg:h-14 object-contain drop-shadow-md transition-transform group-hover:scale-105"
               priority 
             />
           </Link>
@@ -156,7 +156,7 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="btn-primary text-xs shadow-none"
+                className="btn-primary text-xs shadow-none hidden sm:inline-flex"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Sign In</span>

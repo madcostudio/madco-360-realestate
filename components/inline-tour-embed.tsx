@@ -59,7 +59,7 @@ export function InlineTourEmbed({ slug, title, externalTourUrl, tourData }: Inli
       {/* Embedded 360° Viewer Container */}
       <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-800">
         {hasExternalTour ? (
-          <div className="relative w-full h-[500px] sm:h-[600px] bg-slate-950">
+          <div className="relative w-full h-[350px] sm:h-[500px] lg:h-[600px] bg-slate-950">
             <ExternalTourFrame
               src={externalTourUrl!}
               title={`${title || 'Property'} 360° Virtual Tour`}
@@ -76,22 +76,6 @@ export function InlineTourEmbed({ slug, title, externalTourUrl, tourData }: Inli
             fullscreen={false}
           />
         )}
-
-        {/* Quick Launch Card Overlay */}
-        <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-slate-950 via-slate-950/70 to-transparent flex items-start justify-between pointer-events-none z-20">
-          <div className="pointer-events-auto flex items-center space-x-3 mt-2">
-            <span className="text-[10px] sm:text-xs text-slate-300 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 shadow-md">
-              💡 Interactive 360° Tour: Click &amp; drag to look around, or use on-screen hotspots to explore
-            </span>
-          </div>
-
-          <Link
-            href={`/property/${slug}/tour`}
-            className="pointer-events-auto mt-2 text-[10px] sm:text-xs font-bold text-brass hover:text-white bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-brass/40 hover:border-brass transition shadow-md"
-          >
-            Launch Fullscreen ↗
-          </Link>
-        </div>
       </div>
     </section>
   );

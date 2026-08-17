@@ -8,9 +8,10 @@ interface TourHeaderOverlayProps {
   price: number;
   address?: string;
   slug: string;
+  contactPhone?: string;
 }
 
-export function TourHeaderOverlay({ title, price, address, slug }: TourHeaderOverlayProps) {
+export function TourHeaderOverlay({ title, price, address, slug, contactPhone }: TourHeaderOverlayProps) {
   const formattedPrice = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
@@ -56,7 +57,18 @@ export function TourHeaderOverlay({ title, price, address, slug }: TourHeaderOve
         <div className="flex items-center space-x-3 shrink-0">
           <div className="text-right hidden sm:block">
             <span className="text-xs text-slate-400 block uppercase tracking-wider">Listing Price</span>
-            <span className="text-xl font-bold text-brass font-mono">{formattedPrice}</span>
+            {price === 0 ? (
+              <a
+                href={contactPhone ? `https://wa.me/${contactPhone.replace(/[^0-9]/g, '')}` : '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-bold font-sans text-gold hover:underline"
+              >
+                Price on Request
+              </a>
+            ) : (
+              <span className="text-xl font-bold text-brass font-mono">{formattedPrice}</span>
+            )}
           </div>
 
           <button

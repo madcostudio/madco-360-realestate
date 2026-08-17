@@ -108,6 +108,7 @@ export function LocationSheet() {
   };
 
   const popularCities = [
+    { name: 'All India', lat: null, lng: null },
     { name: 'Mangalore', lat: 12.9141, lng: 74.8560 },
     { name: 'Mumbai', lat: 19.0760, lng: 72.8777 },
     { name: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
@@ -211,7 +212,7 @@ export function LocationSheet() {
             {popularCities.map((pop) => (
               <button
                 key={pop.name}
-                onClick={() => handleSelectCity(pop.name, pop.lat.toString(), pop.lng.toString())}
+                onClick={() => handleSelectCity(pop.name, pop.lat?.toString(), pop.lng?.toString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
                   city?.toLowerCase() === pop.name.toLowerCase()
                     ? 'bg-brass text-ink-950 border-brass'

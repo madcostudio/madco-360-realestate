@@ -53,6 +53,7 @@ export interface PropertyData {
   featured?: boolean;
   contact_phone?: string;
   map_url?: string;
+  carpet_area?: string;
 }
 
 export function hasVerified360Tour(property?: PropertyData | null): boolean {

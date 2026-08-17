@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { sendEmailNotification } from '@/lib/email';
 
 export interface SubmitEnquiryInput {
@@ -21,6 +22,10 @@ export interface SubmitEnquiryResult {
 export async function submitEnquiryAction(input: SubmitEnquiryInput): Promise<SubmitEnquiryResult> {
   try {
     const supabase = await createClient();
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     const {
       propertyId,
@@ -40,7 +45,7 @@ export async function submitEnquiryAction(input: SubmitEnquiryInput): Promise<Su
 
     const enquiryId = crypto.randomUUID();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('enquiries')
       .insert({
         id: enquiryId,

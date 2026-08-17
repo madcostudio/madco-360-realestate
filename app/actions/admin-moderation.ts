@@ -34,12 +34,14 @@ export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardDat
     let rawDesc = p.description || '';
     let contact_phone = '';
     let map_url = '';
+    let carpet_area = '';
     const metaMatch = rawDesc.match(/<!-- META: (.*?) -->/);
     if (metaMatch) {
       try {
         const meta = JSON.parse(metaMatch[1]);
         contact_phone = meta.contact_phone || '';
         map_url = meta.map_url || '';
+        carpet_area = meta.carpet_area || '';
       } catch (e) {}
       rawDesc = rawDesc.replace(metaMatch[0], '').trim();
     }
@@ -62,6 +64,7 @@ export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardDat
       featured: Boolean(p.featured),
       contact_phone: contact_phone,
       map_url: map_url,
+      carpet_area: carpet_area,
       lat: p.lat,
       lng: p.lng,
       created_at: p.created_at,
@@ -190,6 +193,49 @@ export interface UpdatePropertyDetailsPayload {
   featured?: boolean;
   contact_phone?: string;
   map_url?: string;
+  carpet_area?: string;
+}
+
+export async function uploadPropertyImageAction(formData: FormData): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const coverFile = formData.get('coverFile') as File | null;
+    const propertyId = formData.get('propertyId') as string;
+
+    if (!coverFile || !propertyId) {
+      return { success: false, error: 'Missing file or property ID' };
+    }
+
+    const fileExt = coverFile.name.split('.').pop() || 'jpg';
+    const filePath = `covers/${propertyId}-${Date.now()}.${fileExt}`;
+    const arrayBuffer = await coverFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const { data: uploadData, error: uploadErr } = await supabase.storage
+      .from('property-media')
+      .upload(filePath, buffer, {
+        contentType: coverFile.type || 'image/jpeg',
+        upsert: true,
+      });
+
+    if (uploadErr) {
+      return { success: false, error: uploadErr.message };
+    }
+
+    if (uploadData) {
+      const { data: publicUrlData } = supabase.storage
+        .from('property-media')
+        .getPublicUrl(uploadData.path);
+      
+      if (publicUrlData?.publicUrl) {
+        return { success: true, url: publicUrlData.publicUrl };
+      }
+    }
+
+    return { success: false, error: 'Failed to retrieve public URL' };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
 }
 
 export async function updatePropertyDetailsAction(
@@ -202,7 +248,8 @@ export async function updatePropertyDetailsAction(
     // Pack contact_phone and map_url into description since columns don't exist in DB
     const packedDescription = `${payload.description || ''}\n\n<!-- META: ${JSON.stringify({
       contact_phone: payload.contact_phone || '',
-      map_url: payload.map_url || ''
+      map_url: payload.map_url || '',
+      carpet_area: payload.carpet_area || ''
     })} -->`;
 
     const { error } = await supabase
