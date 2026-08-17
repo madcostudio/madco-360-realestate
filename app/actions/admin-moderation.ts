@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { PropertyData } from '@/lib/mock-data';
 
 export interface AdminDashboardData {
@@ -22,7 +22,7 @@ export interface AdminDashboardData {
 }
 
 export async function fetchAdminDashboardDataAction(): Promise<AdminDashboardData> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // 1. Fetch all properties ordered by created_at desc
   const { data: propertiesData, error: propErr } = await supabase
@@ -120,7 +120,7 @@ export async function togglePropertyFeaturedAction(
   featured: boolean
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { error } = await supabase
       .from('properties')
@@ -198,7 +198,7 @@ export interface UpdatePropertyDetailsPayload {
 
 export async function uploadPropertyImageAction(formData: FormData): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const coverFile = formData.get('coverFile') as File | null;
     const propertyId = formData.get('propertyId') as string;
 
@@ -243,7 +243,7 @@ export async function updatePropertyDetailsAction(
   payload: UpdatePropertyDetailsPayload
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Pack contact_phone and map_url into description since columns don't exist in DB
     const packedDescription = `${payload.description || ''}\n\n<!-- META: ${JSON.stringify({
