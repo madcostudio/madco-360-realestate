@@ -156,7 +156,7 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="btn-primary text-xs shadow-none hidden sm:inline-flex"
+                className="btn-primary text-xs shadow-none flex items-center space-x-1"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Sign In</span>
