@@ -3,19 +3,19 @@ import { Compass, Search, Home } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-ink-950 text-text-hi flex items-center justify-center p-6 text-center">
-      <div className="max-w-md w-full space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-brass-soft border border-brass/30 text-brass flex items-center justify-center mx-auto">
+    <main className="min-h-screen bg-[#FBFBF9] text-slate-900 flex items-center justify-center p-6 text-center">
+      <div className="max-w-md w-full space-y-6 bg-white border border-slate-200 p-8 rounded-3xl shadow-luxury-md">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto shadow-2xs">
           <Compass className="w-8 h-8 animate-spin-slow" />
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs uppercase font-mono text-brass font-bold tracking-widest">404 — Page Not Found</span>
-          <h1 className="text-3xl font-serif font-bold text-text-hi">
-            This home isn't on the market.
+          <span className="text-xs uppercase font-mono text-amber-800 font-bold tracking-widest">404 — Page Not Found</span>
+          <h1 className="text-3xl font-serif font-bold text-slate-900">
+            This home isn&apos;t on the market.
           </h1>
-          <p className="text-text-lo text-sm">
-            The page or property listing you are looking for may have been sold, unlisted, or moved. Let's find you one that is available.
+          <p className="text-slate-600 text-sm">
+            The page or property listing you are looking for may have been sold, unlisted, or moved. Let&apos;s find you one that is available.
           </p>
         </div>
 
@@ -26,7 +26,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="/search"
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-ink-900 border border-line hover:border-brass text-text-lo hover:text-text-hi text-xs font-semibold transition flex items-center justify-center space-x-1.5"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-600 text-slate-700 hover:text-slate-900 text-xs font-semibold transition flex items-center justify-center space-x-1.5 shadow-2xs"
           >
             <Search className="w-4 h-4" />
             <span>Search Properties</span>

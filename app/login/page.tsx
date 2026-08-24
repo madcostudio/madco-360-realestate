@@ -12,14 +12,14 @@ function LoginContent() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-ink-950 flex items-center justify-center">
+    <div className="min-h-screen bg-[#FBFBF9] flex items-center justify-center">
       {/* Ambient glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-gold/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-amber-500/5 pointer-events-none" />
 
       <div className="text-center mb-8 relative z-10">
         <div className="flex items-center justify-center space-x-2 mb-6">
-          <Compass className="w-6 h-6 text-gold animate-spin-slow" />
-          <span className="text-xl font-bold font-sans text-white">Mad.co Estates</span>
+          <Compass className="w-6 h-6 text-amber-600 animate-spin-slow" />
+          <span className="text-xl font-bold font-sans text-slate-900">Mad.co Estates</span>
         </div>
       </div>
 

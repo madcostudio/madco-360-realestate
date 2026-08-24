@@ -7,8 +7,8 @@ import { saveSiteContentAction, getSiteContentAction } from '@/app/actions/site-
 
 export default function AdminContentEditorPage() {
   const [announcement, setAnnouncement] = useState('⚡ 360° Walkthrough Guarantee — Every listing room-to-room spatial scanned in HD.');
-  const [heroHeading, setHeroHeading] = useState('Walk through your next home before you ever step inside it.');
-  const [heroSubcopy, setHeroSubcopy] = useState('Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs.');
+  const [heroHeading, setHeroHeading] = useState('Walk through your next home before you ever step inside.');
+  const [heroSubcopy, setHeroSubcopy] = useState('Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio.');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -59,100 +59,122 @@ export default function AdminContentEditorPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-6 sm:p-12 max-w-5xl mx-auto space-y-8">
+    <main className="min-h-screen bg-[#060608] text-slate-100 p-4 sm:p-8 lg:p-12 max-w-5xl mx-auto space-y-8">
       {/* Header */}
-      <div className="bg-estate-card border border-estate-border rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
+      <div className="bg-slate-900/70 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10">
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center space-x-1.5 text-xs text-brass hover:underline mb-2 font-semibold"
+            className="inline-flex items-center space-x-1.5 text-xs text-sky-400 hover:text-sky-300 font-mono mb-2 font-semibold"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Staff Dashboard</span>
           </Link>
-          <div className="flex items-center space-x-2 text-brass text-xs font-bold uppercase tracking-wider mb-1">
-            <ShieldCheck className="w-4 h-4 text-brass" />
-            <span>Madco Estates Content Management</span>
+          <div className="flex items-center space-x-2 text-sky-400 text-xs font-mono font-bold uppercase tracking-widest mb-1.5">
+            <ShieldCheck className="w-4 h-4 text-sky-400" />
+            <span>ESTATES.MADCO.IN • CONTENT MANAGEMENT</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-white">Homepage &amp; Announcement Editor</h1>
-          <p className="text-slate-400 text-xs mt-1">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
+            Homepage &amp; Announcement Editor
+          </h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
             Configure dynamic promotional top banners, hero copy, and editorial highlights stored in live Supabase Postgres.
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="bg-estate-card border border-estate-border rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+      <form onSubmit={handleSave} className="bg-slate-900/70 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
         {saved && (
-          <div className="p-4 bg-fern/20 border border-fern/40 text-fern rounded-2xl flex items-center space-x-2 text-xs font-bold">
-            <CheckCircle2 className="w-4 h-4" />
+          <div className="p-4 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 rounded-2xl flex items-center space-x-2.5 text-xs font-bold font-mono">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Site content configuration saved to Supabase successfully!</span>
           </div>
         )}
 
         {error && (
-          <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-2xl flex items-center space-x-2 text-xs font-bold">
-            <AlertCircle className="w-4 h-4" />
+          <div className="p-4 bg-red-500/15 border border-red-500/30 text-red-400 rounded-2xl flex items-center space-x-2.5 text-xs font-bold font-mono">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {loading ? (
           <div className="py-12 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
-            <Loader2 className="w-6 h-6 animate-spin text-brass" />
-            <p className="text-xs">Fetching current site content from Supabase...</p>
+            <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
+            <span className="text-xs font-mono">Loading current database copy...</span>
           </div>
         ) : (
           <>
+            {/* Top Announcement Banner */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-                <Megaphone className="w-4 h-4 text-brass" />
-                <span>Global Top Announcement Banner</span>
+              <label className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-300">
+                <Megaphone className="w-4 h-4 text-sky-400" />
+                <span>Top Ticker / Announcement Banner</span>
               </label>
               <input
                 type="text"
-                required
                 value={announcement}
                 onChange={(e) => setAnnouncement(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brass font-mono"
+                placeholder="e.g. ⚡ 360° Walkthrough Guarantee — Every listing room-to-room spatial scanned in HD."
+                className="w-full bg-black/50 border border-white/15 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-sky-400 font-mono transition"
               />
+              <p className="text-[11px] text-slate-400">
+                Displayed in the glowing header banner on all pages. Leave empty to hide banner.
+              </p>
             </div>
 
+            <div className="border-t border-white/[0.08] my-6" />
+
+            {/* Hero Main Heading */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-gold" />
-                <span>Homepage Hero Headline</span>
+              <label className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-300">
+                <Sparkles className="w-4 h-4 text-sky-400" />
+                <span>Hero Main Heading</span>
               </label>
               <input
                 type="text"
-                required
                 value={heroHeading}
                 onChange={(e) => setHeroHeading(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brass font-serif"
+                placeholder="Walk through your next home before you ever step inside."
+                className="w-full bg-black/50 border border-white/15 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-sky-400 transition"
               />
             </div>
 
+            {/* Hero Subcopy */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-slate-400" />
-                <span>Hero Supporting Paragraph</span>
+              <label className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-300">
+                <FileText className="w-4 h-4 text-sky-400" />
+                <span>Hero Sub-copy / Description</span>
               </label>
               <textarea
                 rows={3}
-                required
                 value={heroSubcopy}
                 onChange={(e) => setHeroSubcopy(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brass"
+                placeholder="Explore 100% verified luxury apartments, villas, and independent homes with spherical room-to-room 360° virtual walkthroughs shot in-person by Mad.co Studio."
+                className="w-full bg-black/50 border border-white/15 rounded-2xl p-4 text-xs text-white focus:outline-none focus:border-sky-400 resize-none transition"
               />
             </div>
 
-            <div className="pt-4 flex justify-end">
+            {/* Submit Action */}
+            <div className="flex items-center justify-end pt-4">
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 rounded-xl bg-brass hover:bg-brass-hover text-slate-950 font-bold text-xs shadow-lg shadow-brass/20 transition flex items-center space-x-2 disabled:opacity-60"
+                className="btn-hero-accent text-xs !py-3 !px-8 shadow-glow-cyan flex items-center space-x-2 disabled:opacity-50"
               >
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                <span>{saving ? 'Saving to Supabase...' : 'Save Changes'}</span>
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Updating Supabase...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Site Content</span>
+                  </>
+                )}
               </button>
             </div>
           </>

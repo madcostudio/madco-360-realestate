@@ -85,34 +85,34 @@ export function LocationIpToast() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-      <div className="bg-estate-card border border-brass/40 text-white w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 relative">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+      <div className="bg-white border border-slate-200 text-slate-900 w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 relative">
         <button
           onClick={handleDismiss}
-          className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-800 text-slate-400 hover:text-white transition"
+          className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition"
           aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
         
-        <div className="w-12 h-12 rounded-2xl bg-brass/10 border border-brass/20 flex items-center justify-center mb-4 text-brass">
-          <MapPin className="w-6 h-6" />
+        <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-4 text-amber-700 shadow-xs">
+          <MapPin className="w-6 h-6 text-amber-600" />
         </div>
         
-        <h3 className="font-serif font-bold text-xl mb-2">Explore Nearby Spaces</h3>
-        <p className="text-slate-400 text-sm leading-relaxed mb-6">
+        <h3 className="font-serif font-bold text-xl mb-2 text-slate-900">Explore Nearby Spaces</h3>
+        <p className="text-slate-500 text-sm leading-relaxed mb-6">
           Allow location access to instantly discover verified 360° virtual tours of luxury properties in your current city.
         </p>
 
         {geoError && (
-          <p className="text-red-400 text-xs mb-4">{geoError}</p>
+          <p className="text-red-600 text-xs mb-4">{geoError}</p>
         )}
 
         <div className="flex flex-col space-y-3">
           <button
             onClick={handleDetectLocation}
             disabled={detecting}
-            className="w-full py-3 rounded-xl bg-brass hover:bg-brass-hover text-slate-950 font-bold transition flex items-center justify-center space-x-2 disabled:opacity-70"
+            className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center justify-center space-x-2 shadow-md shadow-amber-600/20 disabled:opacity-70"
           >
             {detecting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -124,7 +124,7 @@ export function LocationIpToast() {
           
           <button
             onClick={handleDismiss}
-            className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition"
+            className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
           >
             Browse All Cities
           </button>

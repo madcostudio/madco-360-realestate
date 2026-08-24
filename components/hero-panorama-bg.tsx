@@ -42,7 +42,7 @@ export function HeroPanoramaBg({
       defaultZoomLvl: 0,
       navbar: false,
       ...(!prefersReducedMotion && !isSlowConnection
-        ? ({ autorotateSpeed: '0.3rpm', autorotateDelay: 0, autorotateIdle: true } as any)
+        ? ({ autorotateSpeed: '0.25rpm', autorotateDelay: 0, autorotateIdle: true } as any)
         : {}),
     });
 
@@ -65,19 +65,20 @@ export function HeroPanoramaBg({
   return (
     <div className="absolute inset-0 w-full h-[100svh] overflow-hidden pointer-events-none">
       {/* 360 Sphere Container */}
-      <div ref={containerRef} className="w-full h-full bg-ink-950 opacity-50 scale-105" />
+      <div ref={containerRef} className="w-full h-full bg-[#FBFBF9] opacity-35 scale-105" />
 
-      {/* Dark Bottom-up Gradient Scrim */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-transparent" />
+      {/* Light Bottom-up Gradient Scrim with high-contrast text protection */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#FBFBF9] via-[#FBFBF9]/70 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FBFBF9]/50 via-transparent to-[#FBFBF9]" />
 
       {/* Top-Right Glass Compass Chip (Signature Feature) */}
       <div className="absolute top-28 right-6 z-20 pointer-events-auto">
-        <div className="bg-glass backdrop-blur-glass border border-line text-text-hi px-4 py-2 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs">
-          <Compass className="w-4 h-4 text-brass animate-pulse" />
+        <div className="bg-white/90 backdrop-blur-xl border border-slate-200/90 text-slate-900 px-4 py-2.5 rounded-2xl shadow-luxury-md flex items-center space-x-3 text-xs">
+          <Compass className="w-4 h-4 text-amber-600 animate-pulse" />
           <div>
-            <span className="text-[10px] text-text-lo block font-mono">You're standing in:</span>
-            <span className="font-bold text-text-hi">
-              {sceneName} • <span className="text-brass">{bearing}° N</span>
+            <span className="text-[10px] text-slate-500 block font-mono">You're standing in:</span>
+            <span className="font-bold text-slate-900">
+              {sceneName} • <span className="text-amber-700">{bearing}° N</span>
             </span>
           </div>
         </div>

@@ -59,36 +59,36 @@ export default function SubmitPropertyPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-6 sm:p-12 max-w-3xl mx-auto space-y-8">
+    <main className="min-h-screen bg-[#FBFBF9] text-slate-900 p-6 sm:p-12 max-w-3xl mx-auto space-y-8">
       <div className="flex items-center space-x-4">
         <Link
           href="/dashboard"
-          className="p-2.5 rounded-xl bg-estate-card border border-estate-border text-slate-300 hover:text-white transition"
+          className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition shadow-2xs"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <span className="text-xs uppercase tracking-wider text-brass font-bold">Owner Portal</span>
-          <h1 className="text-3xl font-serif font-bold text-white">Submit New Property Listing</h1>
+          <span className="text-xs uppercase tracking-wider text-amber-700 font-bold">Owner Portal</span>
+          <h1 className="text-3xl font-serif font-bold text-slate-900">Submit New Property Listing</h1>
         </div>
       </div>
 
-      <div className="bg-estate-card border border-estate-border rounded-3xl p-6 sm:p-8 shadow-2xl">
+      <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 shadow-luxury-md">
         {submittedProperty ? (
           <div className="py-12 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-fern mx-auto animate-bounce" />
-            <h2 className="text-2xl font-serif font-bold text-white">Property Submitted to Database!</h2>
-            <p className="text-slate-300 text-sm max-w-md mx-auto">
-              Your property listing has been recorded in the database with status <span className="font-mono text-brass font-bold">pending review</span>.
+            <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
+            <h2 className="text-2xl font-serif font-bold text-slate-900">Property Submitted to Database!</h2>
+            <p className="text-slate-600 text-sm max-w-md mx-auto">
+              Your property listing has been recorded in the database with status <span className="font-mono text-amber-800 font-bold">pending review</span>.
               {requestMadcoCapture && ' Our Mad.co 360° Capture team will contact you to schedule your photoshoot.'}
             </p>
-            <div className="pt-2 text-xs font-mono text-slate-400">
-              Reference ID: <span className="text-white">{submittedProperty.id}</span>
+            <div className="pt-2 text-xs font-mono text-slate-500">
+              Reference ID: <span className="text-slate-900 font-semibold">{submittedProperty.id}</span>
             </div>
             <div className="pt-4 flex flex-wrap justify-center gap-3">
               <Link
                 href="/dashboard"
-                className="px-6 py-3 rounded-xl bg-brass hover:bg-brass-hover text-slate-950 font-bold text-sm transition"
+                className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm transition shadow-md shadow-amber-600/20"
               >
                 Return to Dashboard
               </Link>
@@ -102,7 +102,7 @@ export default function SubmitPropertyPage() {
                   setCoverFile(null);
                   setPanoFile(null);
                 }}
-                className="px-6 py-3 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold text-sm transition"
+                className="px-6 py-3 rounded-xl bg-slate-100 border border-slate-300 hover:bg-slate-200 text-slate-800 font-bold text-sm transition"
               >
                 Submit Another Listing
               </button>
@@ -111,43 +111,43 @@ export default function SubmitPropertyPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMsg && (
-              <div className="p-4 rounded-xl bg-red-950/60 border border-red-800 text-red-200 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Property Title</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Property Title</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Luxury 3BHK Penthouse in Worli"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Price (₹ INR)</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Price (₹ INR)</label>
                 <input
                   type="number"
                   required
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="e.g. 25000000"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass font-mono"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white font-mono transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Bedrooms (BHK)</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Bedrooms (BHK)</label>
                 <select
                   value={bhk}
                   onChange={(e) => setBhk(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
                 >
                   <option value="1">1 BHK</option>
                   <option value="2">2 BHK</option>
@@ -159,117 +159,117 @@ export default function SubmitPropertyPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Street Address</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Street Address</label>
                 <input
                   type="text"
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. 45 Marine Drive, Bandra"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">City</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">City</label>
                 <input
                   type="text"
                   required
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. Mumbai, Bengaluru, Goa"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Locality / Neighborhood</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Locality / Neighborhood</label>
               <input
                 type="text"
                 value={locality}
                 onChange={(e) => setLocality(e.target.value)}
                 placeholder="e.g. Bandra West, Kadri, Indiranagar"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Property Description</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Property Description</label>
               <textarea
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Highlight key luxury specs, flooring, sea view, fittings, and amenities..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">360° Tour Link</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">360° Tour Link</label>
               <input
                 type="url"
                 value={externalTourUrl}
                 onChange={(e) => setExternalTourUrl(e.target.value)}
                 placeholder="https://pano.cool/@your-handle/project-id or Kuula / Matterport link"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass font-mono text-xs"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white font-mono text-xs transition"
               />
-              <p className="text-[11px] text-slate-400 mt-1 leading-normal">
+              <p className="text-[11px] text-slate-500 mt-1 leading-normal">
                 Paste the shareable/embed link to this property&apos;s 360° tour (Panocool, Kuula, Matterport, etc.). Leave blank if you&apos;re building the tour with panoramas instead.
               </p>
             </div>
 
             {/* Media Uploads Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-800 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200 pt-4">
               {/* Cover Image Upload */}
-              <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
-                <label className="block text-xs font-bold text-slate-200 flex items-center space-x-1.5">
-                  <ImageIcon className="w-4 h-4 text-brass" />
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+                  <ImageIcon className="w-4 h-4 text-amber-700" />
                   <span>Cover Photo (Property Media Bucket)</span>
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                  className="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brass/20 file:text-brass hover:file:bg-brass/30 cursor-pointer"
+                  className="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer"
                 />
                 {coverFile && (
-                  <p className="text-[11px] text-brass font-mono">Selected: {coverFile.name} ({(coverFile.size / 1024).toFixed(1)} KB)</p>
+                  <p className="text-[11px] text-amber-700 font-mono">Selected: {coverFile.name} ({(coverFile.size / 1024).toFixed(1)} KB)</p>
                 )}
               </div>
 
               {/* Optional 360 Panorama Raw Capture Upload */}
-              <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
-                <label className="block text-xs font-bold text-slate-200 flex items-center space-x-1.5">
-                  <Camera className="w-4 h-4 text-brass" />
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+                  <Camera className="w-4 h-4 text-amber-700" />
                   <span>360° Equirectangular Panorama (Optional)</span>
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setPanoFile(e.target.files?.[0] || null)}
-                  className="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brass/20 file:text-brass hover:file:bg-brass/30 cursor-pointer"
+                  className="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer"
                 />
                 {panoFile && (
-                  <p className="text-[11px] text-brass font-mono">Selected: {panoFile.name} ({(panoFile.size / 1024).toFixed(1)} KB)</p>
+                  <p className="text-[11px] text-amber-700 font-mono">Selected: {panoFile.name} ({(panoFile.size / 1024).toFixed(1)} KB)</p>
                 )}
               </div>
             </div>
 
             {/* Mad.co Capture Visit Option */}
-            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+            <div className="bg-amber-50/70 border border-amber-200/80 p-4 rounded-2xl space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={requestMadcoCapture}
                   onChange={(e) => setRequestMadcoCapture(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-700 text-brass focus:ring-brass"
+                  className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
                 />
                 <div>
-                  <span className="font-bold text-sm text-white block">
+                  <span className="font-bold text-sm text-slate-900 block">
                     Book a Mad.co 360° Professional Capture Visit
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-600">
                     Our field capture team will visit your property with 8K HDR equirectangular camera rigs to produce the full multi-room walkthrough.
                   </span>
                 </div>
@@ -279,12 +279,12 @@ export default function SubmitPropertyPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brass via-brass-dark to-brass text-slate-950 font-bold text-sm shadow-lg shadow-brass/20 transition hover:scale-[1.01] flex items-center justify-center space-x-2"
+              className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md shadow-amber-600/20 transition hover:scale-[1.01] flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Uploading Assets & Submitting Listing...</span>
+                  <span>Uploading Assets &amp; Submitting Listing...</span>
                 </>
               ) : (
                 <span>Submit Property Listing for Review</span>
@@ -296,4 +296,3 @@ export default function SubmitPropertyPage() {
     </main>
   );
 }
-

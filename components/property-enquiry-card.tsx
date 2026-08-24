@@ -52,24 +52,24 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
   };
 
   return (
-    <div className="bg-estate-card border border-estate-border rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
-      <div className="border-b border-estate-border pb-4">
-        <span className="text-xs uppercase tracking-wider text-brass font-bold flex items-center space-x-1.5">
-          <ShieldCheck className="w-4 h-4 text-fern" />
+    <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 shadow-luxury-md space-y-6">
+      <div className="border-b border-slate-100 pb-4">
+        <span className="text-xs uppercase tracking-wider text-amber-800 font-bold flex items-center space-x-1.5">
+          <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span>Direct Owner / Agent Inquiry</span>
         </span>
-        <h3 className="text-2xl font-serif font-bold text-white mt-1">Request Verified Site Visit</h3>
-        <p className="text-xs text-slate-400 mt-1">
+        <h3 className="text-2xl font-serif font-bold text-slate-900 mt-1">Request Verified Site Visit</h3>
+        <p className="text-xs text-slate-500 mt-1">
           Receive property documents, floorplans, and private inspection slots directly.
         </p>
       </div>
 
       {submitted ? (
-        <div className="py-8 text-center space-y-3 bg-estate-card/80 border border-fern/30 rounded-2xl p-6">
-          <CheckCircle2 className="w-12 h-12 text-fern mx-auto animate-bounce" />
-          <h4 className="text-xl font-serif font-bold text-white">Enquiry Received!</h4>
-          <p className="text-slate-300 text-xs max-w-sm mx-auto">
-            Thank you <strong className="text-white">{name}</strong>. The listing manager has been alerted and will reach out to <strong className="text-brass">{phone}</strong> shortly.
+        <div className="py-8 text-center space-y-3 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
+          <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto animate-bounce" />
+          <h4 className="text-xl font-serif font-bold text-slate-900">Enquiry Received!</h4>
+          <p className="text-slate-600 text-xs max-w-sm mx-auto">
+            Thank you <strong className="text-slate-900">{name}</strong>. The listing manager has been alerted and will reach out to <strong className="text-amber-800">{phone}</strong> shortly.
           </p>
           <button
             onClick={() => {
@@ -78,7 +78,7 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
               setPhone('');
               setEmail('');
             }}
-            className="text-xs text-brass hover:underline pt-2 inline-block font-semibold"
+            className="text-xs text-amber-700 hover:underline pt-2 inline-block font-semibold"
           >
             Submit another query
           </button>
@@ -86,11 +86,11 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <p className="text-xs text-red-400 bg-red-950/50 p-3 rounded-xl border border-red-800">{error}</p>
+            <p className="text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">{error}</p>
           )}
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">Your Full Name</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Your Full Name</label>
             <div className="relative">
               <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
@@ -99,14 +99,14 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Ramesh Kumar"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Phone Number</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
               <div className="relative">
                 <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
@@ -115,13 +115,13 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
@@ -129,26 +129,26 @@ export function PropertyEnquiryCard({ propertyId, propertyTitle, price, contactP
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ramesh@example.com"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">Message / Questions</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Message / Questions</label>
             <textarea
               rows={3}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brass"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brass via-brass-dark to-brass text-slate-950 font-bold text-sm shadow-lg shadow-brass/20 flex items-center justify-center space-x-2 hover:scale-[1.01] transition"
+            className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md shadow-amber-600/20 flex items-center justify-center space-x-2 hover:scale-[1.01] transition"
           >
             {loading ? (
               <>

@@ -16,15 +16,15 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-ink-950 text-text-hi flex items-center justify-center p-6 text-center">
-      <div className="max-w-md w-full bg-ink-900 border border-line p-8 rounded-3xl shadow-2xl space-y-6">
-        <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center mx-auto">
+    <main className="min-h-screen bg-[#FBFBF9] text-slate-900 flex items-center justify-center p-6 text-center">
+      <div className="max-w-md w-full bg-white border border-slate-200 p-8 rounded-3xl shadow-luxury-md space-y-6">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto shadow-2xs">
           <AlertCircle className="w-7 h-7" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-serif font-bold text-text-hi">Something Went Wrong</h1>
-          <p className="text-text-lo text-xs leading-relaxed">
+          <h1 className="text-2xl font-serif font-bold text-slate-900">Something Went Wrong</h1>
+          <p className="text-slate-600 text-xs leading-relaxed">
             An unexpected error occurred while loading this view. Please try reloading or return to the homepage.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function GlobalError({
           </button>
           <Link
             href="/"
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-ink-950 border border-line hover:border-brass text-text-lo hover:text-text-hi text-xs font-semibold transition flex items-center justify-center space-x-1.5"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-600 text-slate-700 hover:text-slate-900 text-xs font-semibold transition flex items-center justify-center space-x-1.5 shadow-2xs"
           >
             <Home className="w-4 h-4" />
             <span>Go Home</span>

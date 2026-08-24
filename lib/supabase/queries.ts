@@ -2,10 +2,11 @@ import { createClient as createServerClient } from './server';
 import { createClient as createBrowserClient } from './client';
 import { PropertyData, TourData, TourScene, TourHotspot, DEMO_PROPERTIES_LIST, DEMO_PROPERTY, DEMO_TOUR } from '@/lib/mock-data';
 
-// Browser client is sync (createBrowserClient). Server client is async (must await createServerClient()).
-// queries.ts is called from both client and server components.
-// For server-side queries it uses the browser-side anon client (sufficient for public data with RLS).
-// Privileged writes use direct server action clients.
+function isSupabaseConfigured() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return Boolean(url && url.startsWith('http') && !url.includes('your-project.supabase.co'));
+}
+
 function getSupabase() {
   return createBrowserClient();
 }
@@ -14,6 +15,10 @@ function getSupabase() {
  * Fetch all published properties from Supabase
  */
 export async function getPublishedProperties(): Promise<PropertyData[]> {
+  if (!isSupabaseConfigured()) {
+    return DEMO_PROPERTIES_LIST.filter((p) => p.status === 'published');
+  }
+
   try {
     const supabase = getSupabase();
     const { data, error } = await supabase
@@ -41,6 +46,10 @@ export async function getPublishedProperties(): Promise<PropertyData[]> {
  * Fetch featured published properties for the homepage
  */
 export async function getFeaturedProperties(): Promise<PropertyData[]> {
+  if (!isSupabaseConfigured()) {
+    return DEMO_PROPERTIES_LIST.filter((p) => p.status === 'published' && p.featured);
+  }
+
   try {
     const supabase = getSupabase();
     const { data, error } = await supabase
@@ -69,6 +78,10 @@ export async function getFeaturedProperties(): Promise<PropertyData[]> {
  * Fetch a single property by its slug
  */
 export async function getPropertyBySlug(slug: string): Promise<PropertyData | null> {
+  if (!isSupabaseConfigured()) {
+    return DEMO_PROPERTIES_LIST.find((p) => p.slug === slug) || null;
+  }
+
   try {
     const supabase = getSupabase();
     const { data, error } = await supabase
@@ -119,6 +132,10 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyData | nu
  * Fetch complete 360° Tour data including scenes and hotspots by tour ID
  */
 export async function getTourById(tourId: string): Promise<TourData | null> {
+  if (!isSupabaseConfigured()) {
+    return DEMO_TOUR;
+  }
+
   try {
     const supabase = getSupabase();
     
@@ -190,6 +207,32 @@ export async function searchNearbyProperties(options: {
   query?: string;
 }): Promise<PropertyData[]> {
   const { lat, lng, radiusKm = 15, bhk = 'all', city, query } = options;
+
+  if (!isSupabaseConfigured()) {
+    return DEMO_PROPERTIES_LIST.filter((p) => {
+      if (p.status !== 'published') return false;
+      if (bhk !== 'all' && p.bhk.toString() !== bhk) return false;
+      if (city && city !== 'All Cities' && city !== 'All India') {
+        const isMangalore = city.toLowerCase() === 'mangalore' || city.toLowerCase() === 'mangaluru';
+        const propCity = p.city.toLowerCase();
+        if (isMangalore) {
+          if (!propCity.includes('mangalore') && !propCity.includes('mangaluru')) return false;
+        } else {
+          if (!propCity.includes(city.toLowerCase())) return false;
+        }
+      }
+      if (query && query.trim()) {
+        const q = query.toLowerCase();
+        return (
+          p.title.toLowerCase().includes(q) ||
+          p.address.toLowerCase().includes(q) ||
+          p.city.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }
+
   const supabase = getSupabase();
 
   try {

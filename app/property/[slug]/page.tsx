@@ -83,7 +83,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
     : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80';
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white pb-20">
+    <main className="min-h-screen bg-[#EDF3F8] text-slate-900 pb-20">
       <AnimatedSection delay={0} className="relative h-[60vh] min-h-[450px] w-full">
         <Image
           src={safeCover}
@@ -92,23 +92,23 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#EDF3F8] via-transparent to-slate-950/20" />
       </AnimatedSection>
 
-      {/* SECTION 1: HEADER & PRICING (Moved out of hero image) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-12 py-6 flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10 -mt-6">
-        <div className="space-y-3 bg-slate-950/80 backdrop-blur-md p-5 rounded-2xl border border-slate-800 shadow-xl flex-1">
+      {/* SECTION 1: HEADER & PRICING */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-12 py-6 flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10 -mt-10">
+        <div className="space-y-3 bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-sky-200/70 shadow-luxury-md flex-1">
           <div className="flex items-center space-x-2">
             <span className="badge-for-sale">FOR SALE</span>
             {hasTour && (
               <span className="badge-tour-verified">
-                <Compass className="w-3.5 h-3.5 text-gold" />
+                <Compass className="w-3.5 h-3.5 text-sky-600 animate-spin-slow" />
                 <span>360° TOUR VERIFIED</span>
               </span>
             )}
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-tight">
             {activeProperty.title}
           </h1>
 
@@ -117,34 +117,34 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
               href={activeProperty.map_url || `https://maps.google.com/?q=${encodeURIComponent(activeProperty.address + ', ' + activeProperty.city)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-white hover:underline text-xs sm:text-sm flex items-center space-x-1.5 transition w-fit"
+              className="text-slate-600 hover:text-sky-700 hover:underline text-xs sm:text-sm flex items-center space-x-1.5 transition w-fit"
               title="View on Google Maps"
             >
-              <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-sky-600 shrink-0" />
               <span>{activeProperty.address}, {activeProperty.city}</span>
             </a>
           </div>
         </div>
 
-        <div className="flex flex-col items-start md:items-end space-y-4 bg-slate-950/80 backdrop-blur-md p-5 rounded-2xl border border-slate-800 shadow-xl md:min-w-[280px]">
+        <div className="flex flex-col items-start md:items-end space-y-4 bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-sky-200/70 shadow-luxury-md md:min-w-[280px]">
           <div className="text-left md:text-right w-full">
             {activeProperty.price === 0 ? (
                 <a
                   href={activeProperty.contact_phone ? `https://wa.me/${activeProperty.contact_phone.replace(/[^0-9]/g, '')}` : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center px-5 py-3 bg-gold hover:bg-gold/90 text-slate-950 rounded-xl font-bold font-sans text-sm sm:text-base transition-transform hover:scale-[1.02] shadow-xl shadow-gold/20 space-x-2"
+                  className="w-full inline-flex items-center justify-center px-5 py-3 bg-sky-400 hover:bg-sky-300 text-slate-950 rounded-xl font-bold font-sans text-sm sm:text-base transition-transform hover:scale-[1.02] shadow-md shadow-sky-400/25 space-x-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   <span>Price on Request</span>
                 </a>
             ) : (
-              <span className="text-xl sm:text-2xl font-bold font-mono text-brass block">
+              <span className="text-xl sm:text-2xl font-bold font-mono text-sky-900 block">
                 ₹{(activeProperty.price / 10000000).toFixed(2)} Cr
               </span>
             )}
             {activeProperty.price > 0 && (
-              <span className="text-xs text-slate-400 block font-mono mt-1">
+              <span className="text-xs text-slate-500 block font-mono mt-1">
                 ₹{Math.round(activeProperty.price / 1680).toLocaleString('en-IN')}/sq.ft
               </span>
             )}
@@ -155,7 +155,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
               href={`https://wa.me/?text=${encodeURIComponent(`Hey! Check out this 360° verified property I found on Mad.co Estates:\n\n*${activeProperty.title}*\n📍 ${activeProperty.address}, ${activeProperty.city}\n\nTap the link below to step inside and walk through every room in 360° before visiting!\n\nhttps://estates.madco.in/property/${activeProperty.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-gold/50 transition flex items-center justify-center text-slate-300 hover:text-gold"
+              className="p-2.5 rounded-xl bg-sky-50 border border-sky-200 hover:border-sky-500 transition flex items-center justify-center text-slate-600 hover:text-sky-800 shadow-2xs"
               title="Share on WhatsApp"
             >
               <Share2 className="w-4 h-4" />
@@ -164,7 +164,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
             {hasTour && (
               <Link
                 href={`/property/${activeProperty.slug}/tour`}
-                className="flex-1 md:flex-none py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20 transition hover:scale-[1.02]"
+                className="flex-1 md:flex-none py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-md shadow-sky-600/25 transition hover:scale-[1.02]"
               >
                 <Compass className="w-4 h-4 shrink-0" />
                 <span>Launch 360° Walkthrough</span>
@@ -176,33 +176,33 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
 
       {/* SECTION 6.2: HIGHLIGHTS SPECS BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-12 py-8 sm:py-10 space-y-10">
-        <AnimatedSection delay={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-6 bg-estate-card border border-estate-border rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-primary/5 transition-shadow duration-300">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-800 sm:pr-4">
-            <BedDouble className="w-6 h-6 sm:w-7 sm:h-7 text-brass shrink-0" />
+        <AnimatedSection delay={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-6 bg-white border border-sky-200/70 rounded-3xl shadow-luxury-sm hover:shadow-luxury-hover transition-shadow duration-300">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-100 sm:pr-4">
+            <BedDouble className="w-6 h-6 sm:w-7 sm:h-7 text-sky-700 shrink-0" />
             <div>
-              <span className="text-[10px] sm:text-xs text-slate-400 block uppercase">Bedrooms</span>
-              <span className="text-sm sm:text-lg font-bold text-white">{activeProperty.bhk} BHK Suite</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 block uppercase">Bedrooms</span>
+              <span className="text-sm sm:text-lg font-bold text-slate-900">{activeProperty.bhk} BHK Suite</span>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-800 sm:pr-4">
-            <Bath className="w-6 h-6 sm:w-7 sm:h-7 text-brass shrink-0" />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-100 sm:pr-4">
+            <Bath className="w-6 h-6 sm:w-7 sm:h-7 text-sky-700 shrink-0" />
             <div>
-              <span className="text-[10px] sm:text-xs text-slate-400 block uppercase">Bathrooms</span>
-              <span className="text-sm sm:text-lg font-bold text-white">2 En-suite</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 block uppercase">Bathrooms</span>
+              <span className="text-sm sm:text-lg font-bold text-slate-900">2 En-suite</span>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-800 sm:pr-4">
-            <Square className="w-6 h-6 sm:w-7 sm:h-7 text-brass shrink-0" />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 md:border-r border-slate-100 sm:pr-4">
+            <Square className="w-6 h-6 sm:w-7 sm:h-7 text-sky-700 shrink-0" />
             <div>
-              <span className="text-[10px] sm:text-xs text-slate-400 block uppercase">Carpet Area</span>
-              <span className="text-sm sm:text-lg font-bold text-white">{activeProperty.carpet_area || 'N/A'}</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 block uppercase">Carpet Area</span>
+              <span className="text-sm sm:text-lg font-bold text-slate-900">{activeProperty.carpet_area || 'N/A'}</span>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-            <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-fern shrink-0" />
+            <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-600 shrink-0" />
             <div>
-              <span className="text-[10px] sm:text-xs text-slate-400 block uppercase">Occupancy</span>
-              <span className="text-sm sm:text-lg font-bold text-white">Ready to Move</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 block uppercase">Occupancy</span>
+              <span className="text-sm sm:text-lg font-bold text-slate-900">Ready to Move</span>
             </div>
           </div>
         </AnimatedSection>
@@ -210,7 +210,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
         {/* Section: Short Description */}
         {activeProperty.description && (
           <AnimatedSection delay={0.15}>
-            <p className="text-slate-300 text-sm leading-relaxed max-w-4xl mx-auto text-center px-4">
+            <p className="text-slate-600 text-sm leading-relaxed max-w-4xl mx-auto text-center px-4">
               {activeProperty.description.split('\n')[0].substring(0, 150)}...
             </p>
           </AnimatedSection>
@@ -228,11 +228,11 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
           </AnimatedSection>
         )}
 
-        {/* Section: Full Description (Moved to bottom) */}
+        {/* Section: Full Description */}
         {activeProperty.description && (
-          <AnimatedSection delay={0.35} className="bg-estate-card border border-estate-border rounded-3xl p-6 sm:p-8 shadow-xl space-y-4 max-w-4xl mx-auto">
-            <h2 className="text-xl font-serif font-bold text-white border-b border-slate-800 pb-3">Detailed Property Description</h2>
-            <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+          <AnimatedSection delay={0.35} className="bg-white border border-sky-200/70 rounded-3xl p-6 sm:p-8 shadow-luxury-sm space-y-4 max-w-4xl mx-auto">
+            <h2 className="text-xl font-serif font-bold text-slate-900 border-b border-slate-100 pb-3">Detailed Property Description</h2>
+            <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">
               {activeProperty.description}
             </div>
           </AnimatedSection>
@@ -252,16 +252,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailProps
         <section className="space-y-6 pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold font-mono text-gold uppercase tracking-wider">
+              <span className="text-xs font-bold font-mono text-sky-700 uppercase tracking-wider">
                 Explore More Spaces
               </span>
-              <h2 className="text-2xl font-serif font-bold text-white mt-1">
+              <h2 className="text-2xl font-serif font-bold text-slate-900 mt-1">
                 Similar 360° Verified Properties
               </h2>
             </div>
             <Link
               href="/search"
-              className="text-xs font-bold text-gold hover:underline flex items-center space-x-1"
+              className="text-xs font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center space-x-1"
             >
               <span>View All</span>
               <span>→</span>

@@ -119,19 +119,19 @@ export function LocationSheet() {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-ink-900 border border-line text-text-hi max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-white border border-slate-200 text-slate-900 max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
         <button
           onClick={closeLocationSheet}
-          className="absolute top-4 right-4 text-text-lo hover:text-text-hi p-2 rounded-xl hover:bg-ink-800 transition"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="mb-6">
-          <span className="text-xs uppercase tracking-wider text-brass font-semibold">Search Location</span>
-          <h2 className="text-2xl font-serif font-bold text-text-hi mt-1">Select Your Preferred City</h2>
-          <p className="text-text-lo text-xs mt-1">
+          <span className="text-xs uppercase tracking-wider text-amber-700 font-semibold">Search Location</span>
+          <h2 className="text-2xl font-serif font-bold text-slate-900 mt-1">Select Your Preferred City</h2>
+          <p className="text-slate-500 text-xs mt-1">
             Properties, 360° virtual tours, and local distance calculations will update automatically.
           </p>
         </div>
@@ -139,44 +139,44 @@ export function LocationSheet() {
         {/* Browser Geolocation Button */}
         <button
           onClick={handleUseCurrentLocation}
-          className="w-full py-3 px-4 mb-4 rounded-2xl bg-brass-soft border border-brass/30 text-brass hover:bg-brass hover:text-ink-950 font-bold text-xs flex items-center justify-center space-x-2 transition duration-200"
+          className="w-full py-3 px-4 mb-4 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-800 hover:bg-amber-100 hover:border-amber-300 font-bold text-xs flex items-center justify-center space-x-2 transition duration-200 shadow-xs"
         >
-          <Navigation className="w-4 h-4 fill-current" />
+          <Navigation className="w-4 h-4 fill-current text-amber-700" />
           <span>Use My Current Location</span>
         </button>
 
         {geoError && (
-          <p className="text-amber-400 text-xs mb-4 text-center">{geoError}</p>
+          <p className="text-amber-700 text-xs mb-4 text-center bg-amber-50 p-2 rounded-lg">{geoError}</p>
         )}
 
         {/* Nominatim Search Input */}
         <div className="relative mb-6">
-          <Search className="w-4 h-4 text-text-lo absolute left-4 top-3.5" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search city, locality, or landmark in India..."
-            className="w-full bg-ink-950 border border-line rounded-2xl pl-11 pr-4 py-3 text-sm text-text-hi focus:outline-none focus:ring-2 focus:ring-brass"
+            className="w-full bg-slate-50 border border-slate-300 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
           />
           {searching && (
-            <span className="text-xs text-brass absolute right-4 top-3.5 animate-pulse">Searching...</span>
+            <span className="text-xs text-amber-600 absolute right-4 top-3.5 animate-pulse">Searching...</span>
           )}
         </div>
 
         {/* Live Search Results */}
         {results.length > 0 && (
-          <div className="mb-6 border border-line bg-ink-950 rounded-2xl p-2 space-y-1 max-h-48 overflow-y-auto">
+          <div className="mb-6 border border-slate-200 bg-slate-50 rounded-2xl p-2 space-y-1 max-h-48 overflow-y-auto shadow-inner">
             {results.map((r, idx) => {
               const mainName = r.display_name.split(',')[0];
               return (
                 <div
                   key={idx}
                   onClick={() => handleSelectCity(mainName, r.lat, r.lon)}
-                  className="p-2.5 rounded-xl hover:bg-ink-800 cursor-pointer flex items-center space-x-3 transition"
+                  className="p-2.5 rounded-xl hover:bg-white cursor-pointer flex items-center space-x-3 transition shadow-2xs"
                 >
-                  <MapPin className="w-4 h-4 text-brass shrink-0" />
-                  <span className="text-xs text-text-hi truncate">{r.display_name}</span>
+                  <MapPin className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="text-xs text-slate-800 truncate font-medium">{r.display_name}</span>
                 </div>
               );
             })}
@@ -184,8 +184,8 @@ export function LocationSheet() {
         )}
 
         {/* Radius Selector */}
-        <div className="mb-6 border-t border-line pt-4">
-          <label className="block text-xs font-bold text-text-lo uppercase tracking-wider mb-2">
+        <div className="mb-6 border-t border-slate-200 pt-4">
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
             Search Radius Distance
           </label>
           <div className="grid grid-cols-5 gap-2">
@@ -195,8 +195,8 @@ export function LocationSheet() {
                 onClick={() => setRadius(r)}
                 className={`py-2 rounded-xl text-xs font-bold border transition ${
                   radiusKm === r
-                    ? 'bg-brass text-ink-950 border-brass shadow-md'
-                    : 'bg-ink-950 text-text-lo border-line hover:border-text-lo'
+                    ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-white'
                 }`}
               >
                 {r} km
@@ -207,7 +207,7 @@ export function LocationSheet() {
 
         {/* Popular & Recent Cities */}
         <div>
-          <h4 className="text-xs font-bold text-text-lo uppercase tracking-wider mb-2">Popular Cities</h4>
+          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Popular Cities</h4>
           <div className="flex flex-wrap gap-2">
             {popularCities.map((pop) => (
               <button
@@ -215,8 +215,8 @@ export function LocationSheet() {
                 onClick={() => handleSelectCity(pop.name, pop.lat?.toString(), pop.lng?.toString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
                   city?.toLowerCase() === pop.name.toLowerCase()
-                    ? 'bg-brass text-ink-950 border-brass'
-                    : 'bg-ink-950 text-text-hi border-line hover:border-brass'
+                    ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-amber-600 hover:bg-white hover:text-amber-800'
                 }`}
               >
                 {pop.name}

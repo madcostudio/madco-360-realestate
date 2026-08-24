@@ -1,10 +1,11 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyData } from '@/lib/mock-data';
-import { Compass, MapPin, CheckCircle2, MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Compass, MapPin, CheckCircle2, MessageCircle, Sparkles } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 interface PropertyCardProps {
   property: PropertyData;
@@ -14,6 +15,31 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, className = '', imageHeight = 'h-56' }: PropertyCardProps) {
   const isPriceOnRequest = property.price === 0;
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Mouse tilt physics
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 25 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 25 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['5deg', '-5deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-5deg', '5deg']);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    x.set(mouseX / width - 0.5);
+    y.set(mouseY / height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   const formattedPrice = isPriceOnRequest
     ? 'Price on Request'
@@ -57,11 +83,19 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
 
   return (
     <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: 'preserve-3d',
+      }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5 }}
-      className={`relative bg-ink-900 border border-line rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-brass/20 group hover:border-brass/40 transition-all duration-500 flex flex-col justify-between hover:-translate-y-1.5 ${className}`}
+      className={`relative spotlight-card rounded-3xl overflow-hidden shadow-luxury-md hover:shadow-luxury-hover group flex flex-col justify-between ${className}`}
     >
       {/* Full-bleed link to make the entire card clickable */}
       <Link href={`/property/${property.slug}`} className="absolute inset-0 z-0" aria-label={`View ${property.title}`} prefetch={true} />
@@ -76,7 +110,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         />
 
         {/* Gradient shadow overlay for price legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 z-10">
@@ -85,7 +119,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
         {hasTour && (
           <div className="absolute top-3 right-3 z-10">
             <span className="badge-tour-verified">
-              <Compass className="w-3 h-3 text-gold" />
+              <Compass className="w-3 h-3 text-sky-600 animate-spin-slow" />
               <span>360° TOUR VERIFIED</span>
             </span>
           </div>
@@ -97,7 +131,7 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
             <Link
               href={property.contact_phone ? `https://wa.me/${property.contact_phone.replace(/[^0-9]/g, '')}` : `#`}
               target="_blank"
-              className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold font-sans text-slate-950 bg-gold hover:bg-gold/90 px-3 py-1.5 rounded-lg border border-gold/50 shadow-lg shadow-gold/20 transition-transform hover:scale-105"
+              className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold font-sans text-slate-950 bg-sky-400 hover:bg-sky-300 px-3 py-1.5 rounded-lg border border-sky-200 shadow-md transition-transform hover:scale-105"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>{formattedPrice}</span>
@@ -108,18 +142,18 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
             </div>
           )}
           {ratePerSqft && (
-            <div className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-gold/20 backdrop-blur-md border border-gold/40 text-gold mt-1 shadow-sm">
+            <div className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/95 backdrop-blur-md border border-sky-200/80 text-sky-900 mt-1 shadow-2xs">
               {ratePerSqft}
             </div>
           )}
         </div>
 
-        {/* Bottom Right: Orange/Amber Gradient Walk 360° Button (Only if hasTour) */}
+        {/* Bottom Right: Sky-to-Indigo Gradient Walk 360° Button (Only if hasTour) */}
         {hasTour && (
           <div className="absolute bottom-3 right-3 z-20 pointer-events-auto">
             <Link
               href={`/property/${property.slug}/tour`}
-              className="py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-ink-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-md shadow-amber-500/20 hover:scale-[1.02]"
+              className="py-2 px-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-md shadow-sky-600/30 hover:scale-[1.03]"
             >
               <Compass className="w-3.5 h-3.5" />
               <span>Walk 360°</span>
@@ -130,34 +164,34 @@ export function PropertyCard({ property, className = '', imageHeight = 'h-56' }:
 
       {/* Card Body */}
       <div className="p-5 space-y-3 relative z-10 pointer-events-none">
-        {/* Locality line: Purple MapPin + Uppercase Locality + · + Property Type */}
+        {/* Locality line */}
         <div className="flex items-center space-x-1.5 text-xs truncate">
-          <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-          <span className="text-primary font-bold uppercase tracking-wide truncate">
+          <MapPin className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+          <span className="text-sky-700 font-bold uppercase tracking-wide truncate">
             {locality}
           </span>
-          <span className="text-text-lo">·</span>
-          <span className="text-text-lo shrink-0">{propertyType}</span>
+          <span className="text-slate-400">·</span>
+          <span className="text-slate-500 shrink-0 font-medium">{propertyType}</span>
         </div>
 
         {/* Title & Subtitle */}
         <div>
-          <h3 className="text-lg font-serif font-bold text-text-hi line-clamp-1 group-hover:text-gold transition">
+          <h3 className="text-lg font-serif font-bold text-slate-900 line-clamp-1 group-hover:text-sky-700 transition">
             {property.title}
           </h3>
-          <p className="text-text-lo text-xs mt-1 line-clamp-1">
+          <p className="text-slate-500 text-xs mt-1 line-clamp-1">
             {subtitle}
           </p>
         </div>
 
         {/* Verified line row at bottom with hairline divider */}
-        <div className="pt-3 border-t border-line flex items-center justify-between pointer-events-auto">
-          <div className="flex items-center space-x-1.5 text-xs text-text-lo font-medium">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between pointer-events-auto">
+          <div className="flex items-center space-x-1.5 text-xs text-slate-600 font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>Verified Mad.co Tour</span>
           </div>
           <span
-            className="text-primary group-hover:text-gold text-xs font-semibold flex items-center space-x-1 transition"
+            className="text-sky-600 group-hover:text-sky-800 text-xs font-semibold flex items-center space-x-1 transition"
           >
             <span>Full Specs</span>
             <span className="group-hover:translate-x-1 transition-transform">→</span>

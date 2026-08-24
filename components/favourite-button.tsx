@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 interface FavouriteButtonProps {
   propertyId: string;
@@ -12,9 +12,10 @@ interface FavouriteButtonProps {
 export function FavouriteButton({ propertyId, onRequireAuth }: FavouriteButtonProps) {
   const [isFav, setIsFav] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const supabase = createClient();
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
         setUserId(user.id);
@@ -23,7 +24,7 @@ export function FavouriteButton({ propertyId, onRequireAuth }: FavouriteButtonPr
           .select('id')
           .eq('user_id', user.id)
           .eq('property_id', propertyId)
-          .single()
+          .maybeSingle()
           .then(({ data }) => {
             if (data) setIsFav(true);
           });
@@ -39,6 +40,9 @@ export function FavouriteButton({ propertyId, onRequireAuth }: FavouriteButtonPr
       onRequireAuth?.();
       return;
     }
+
+    if (!isSupabaseConfigured()) return;
+    const supabase = createClient();
 
     if (isFav) {
       setIsFav(false);

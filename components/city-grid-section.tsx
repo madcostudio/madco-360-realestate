@@ -43,9 +43,9 @@ export function CityGridSection() {
   const { setLocation } = useLocation();
 
   return (
-    <section className="py-20 max-w-7xl mx-auto px-6 space-y-8 border-b border-line">
+    <section className="py-20 max-w-7xl mx-auto px-6 space-y-8 border-b border-sky-200/50">
       <div className="flex items-center justify-between">
-        <div className="text-xs uppercase tracking-widest text-text-lo font-mono">
+        <div className="text-xs uppercase tracking-widest text-sky-700 font-mono font-bold">
           // BROWSE BY CITY
         </div>
       </div>
@@ -54,25 +54,25 @@ export function CityGridSection() {
         {CITIES.map((cityTile) => (
           <Link
             key={cityTile.slug}
-            href={`/homes-in-${cityTile.slug}`}
+            href={`/search?city=${encodeURIComponent(cityTile.name)}`}
             onClick={() => setLocation({ city: cityTile.name })}
-            className="group relative h-64 rounded-2xl overflow-hidden border border-line hover:border-brass/50 transition duration-300 shadow-xl flex flex-col justify-end p-6"
+            className="group relative h-64 rounded-2xl overflow-hidden border border-sky-200/80 hover:border-sky-500/80 transition duration-300 shadow-luxury-sm hover:shadow-luxury-hover flex flex-col justify-end p-6 hover:-translate-y-1.5"
           >
             <Image
               src={cityTile.image}
               alt={cityTile.name}
               fill
-              className="object-cover brightness-65 group-hover:scale-105 transition-transform duration-700"
+              className="object-cover brightness-75 group-hover:scale-105 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
 
             <div className="relative z-10 space-y-1">
-              <span className="text-[10px] uppercase font-mono tracking-wider text-brass">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-sky-300 font-bold">
                 {cityTile.count} 360° Verified Listings
               </span>
-              <h4 className="font-serif font-bold text-2xl text-text-hi flex items-center justify-between">
+              <h4 className="font-serif font-bold text-2xl text-white flex items-center justify-between">
                 <span>{cityTile.name}</span>
-                <ArrowRight className="w-5 h-5 text-brass group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 text-sky-300 group-hover:translate-x-1 transition-transform" />
               </h4>
             </div>
           </Link>

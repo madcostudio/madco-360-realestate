@@ -51,22 +51,22 @@ export function MangaloreNeighborhoodsSection() {
   const buttonText = city ? `View All ${city} Listings` : 'View All Listings';
 
   return (
-    <section className="py-20 max-w-7xl mx-auto px-6 space-y-8 border-b border-line">
+    <section className="py-20 max-w-7xl mx-auto px-6 space-y-8 border-b border-sky-200/50">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <div className="text-xs uppercase tracking-widest text-gold font-mono mb-1">
+          <div className="text-xs uppercase tracking-widest text-sky-700 font-mono mb-1 font-bold">
             // PRIME LOCALITIES &amp; NEIGHBORHOODS
           </div>
-          <h2 className="text-3xl font-serif font-bold text-text-hi">
+          <h2 className="text-3xl font-serif font-bold text-slate-900">
             {titleText}
           </h2>
-          <p className="text-text-lo text-xs sm:text-sm mt-1">
+          <p className="text-slate-600 text-xs sm:text-sm mt-1">
             Browse hand-curated localities photographed and spatial-scanned by Mad.co Studio.
           </p>
         </div>
         <Link
           href={city ? `/search?city=${encodeURIComponent(city)}` : '/search'}
-          className="text-xs font-bold text-gold hover:underline flex items-center space-x-1"
+          className="text-xs font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center space-x-1"
         >
           <span>{buttonText}</span>
           <ArrowRight className="w-4 h-4" />
@@ -84,26 +84,26 @@ export function MangaloreNeighborhoodsSection() {
               key={hood.slug}
               href={targetUrl}
               onClick={() => setLocation({ city: city || 'All Cities', locality: hood.name })}
-              className="group relative h-72 rounded-2xl overflow-hidden border border-line hover:border-gold/50 transition duration-300 shadow-xl flex flex-col justify-end p-6"
+              className="group relative h-72 rounded-2xl overflow-hidden border border-sky-200/80 hover:border-sky-500/80 transition duration-300 shadow-luxury-sm hover:shadow-luxury-hover flex flex-col justify-end p-6 hover:-translate-y-1.5"
             >
               <Image
                 src={hood.image}
                 alt={hood.name}
                 fill
-                className="object-cover brightness-65 group-hover:scale-105 transition-transform duration-700"
+                className="object-cover brightness-75 group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/50 to-transparent" />
 
               <div className="relative z-10 space-y-1">
-                <div className="inline-flex items-center space-x-1 text-[10px] uppercase font-mono tracking-wider text-gold">
+                <div className="inline-flex items-center space-x-1 text-[10px] uppercase font-mono tracking-wider text-sky-300 font-bold">
                   <MapPin className="w-3 h-3" />
                   <span>{hood.count} 360° Tours</span>
                 </div>
-                <h4 className="font-serif font-bold text-xl text-text-hi flex items-center justify-between">
+                <h4 className="font-serif font-bold text-xl text-white flex items-center justify-between">
                   <span>{hood.name}</span>
-                  <ArrowRight className="w-4 h-4 text-gold group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 text-sky-300 group-hover:translate-x-1 transition-transform" />
                 </h4>
-                <p className="text-[11px] text-text-lo line-clamp-1">{hood.highlight}</p>
+                <p className="text-[11px] text-slate-200 line-clamp-1">{hood.highlight}</p>
               </div>
             </Link>
           );

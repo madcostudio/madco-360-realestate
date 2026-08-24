@@ -34,25 +34,25 @@ export default async function CityLandingPage({ params }: CityPageProps) {
   const displayListings = cityListings.length > 0 ? cityListings : allPublished;
 
   return (
-    <main className="min-h-screen bg-ink-950 text-text-hi pb-20">
+    <main className="min-h-screen bg-[#FBFBF9] text-slate-900 pb-20">
       {/* City Hero Banner */}
-      <section className="relative py-20 bg-ink-900 border-b border-line">
+      <section className="relative py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 space-y-4 relative z-10">
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs text-text-lo hover:text-brass transition mb-2"
+            className="inline-flex items-center space-x-1.5 text-xs text-slate-500 hover:text-amber-800 transition mb-2"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Marketplace</span>
           </Link>
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brass-soft border border-brass/30 text-brass text-xs font-bold uppercase tracking-wider">
-            <MapPin className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider shadow-2xs">
+            <MapPin className="w-3.5 h-3.5 text-amber-600" />
             <span>Verified City Hub</span>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-text-hi">
+          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-slate-900">
             360° Luxury Homes in {capitalizedCity}
           </h1>
-          <p className="text-text-lo text-sm max-w-2xl leading-relaxed">
+          <p className="text-slate-600 text-sm max-w-2xl leading-relaxed">
             Explore verified residential penthouses and architectural villas in {capitalizedCity} with full 360° virtual walkthroughs.
           </p>
         </div>
@@ -61,12 +61,12 @@ export default async function CityLandingPage({ params }: CityPageProps) {
       {/* Listing Grid */}
       <section className="max-w-7xl mx-auto px-6 py-12 space-y-8">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-text-lo font-mono uppercase tracking-wider">
+          <span className="text-xs text-slate-500 font-mono uppercase tracking-wider">
             Showing {displayListings.length} {cityListings.length > 0 ? 'homes in ' + capitalizedCity : 'featured homes across India'}
           </span>
           <Link
             href="/search"
-            className="text-xs text-brass hover:underline font-semibold flex items-center space-x-1"
+            className="text-xs text-amber-700 hover:text-amber-800 hover:underline font-semibold flex items-center space-x-1"
           >
             <span>Filter All Listings</span>
             <Compass className="w-3.5 h-3.5" />
@@ -82,4 +82,3 @@ export default async function CityLandingPage({ params }: CityPageProps) {
     </main>
   );
 }
-

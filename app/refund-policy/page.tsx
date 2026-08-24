@@ -2,23 +2,23 @@ import Link from 'next/link';
 
 export default function RefundPolicyPage() {
   return (
-    <main className="min-h-screen bg-ink-950 text-text-hi py-20 px-6 max-w-4xl mx-auto space-y-8">
-      <div className="border-b border-line pb-6">
-        <span className="text-xs font-mono uppercase tracking-widest text-brass block">Legal & Compliance</span>
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-hi mt-1">Refund & Capture Visit Policy</h1>
-        <p className="text-text-lo text-xs mt-2">Effective Date: August 3, 2026 • Consumer Protection Act 2019 Compliant</p>
+    <main className="min-h-screen bg-[#FBFBF9] text-slate-900 py-20 px-6 max-w-4xl mx-auto space-y-8">
+      <div className="border-b border-slate-200 pb-6">
+        <span className="text-xs font-mono uppercase tracking-widest text-amber-700 font-bold block">Legal & Compliance</span>
+        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 mt-1">Refund &amp; Capture Visit Policy</h1>
+        <p className="text-slate-500 text-xs mt-2">Effective Date: August 3, 2026 • Consumer Protection Act 2019 Compliant</p>
       </div>
 
-      <div className="space-y-6 text-sm text-text-lo leading-relaxed">
+      <div className="space-y-6 text-sm text-slate-600 leading-relaxed bg-white border border-slate-200 rounded-3xl p-8 shadow-luxury-sm">
         <section className="space-y-2">
-          <h2 className="font-serif font-bold text-lg text-text-hi">1. Free Capture Visit Guarantee</h2>
+          <h2 className="font-serif font-bold text-lg text-slate-900">1. Free Capture Visit Guarantee</h2>
           <p>
             Mad.co Studio provides initial 360° capture visit bookings for property owners with zero upfront fee. Property owners are under no financial obligation when booking a capture visit.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="font-serif font-bold text-lg text-text-hi">2. Paid Premium Services & Cancellation</h2>
+          <h2 className="font-serif font-bold text-lg text-slate-900">2. Paid Premium Services &amp; Cancellation</h2>
           <p>
             If a property owner subscribes to paid premium listing features or expedited 360° tour production, cancellation requests made at least 24 hours prior to the scheduled shoot will receive a 100% refund.
           </p>
@@ -28,9 +28,9 @@ export default function RefundPolicyPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="font-serif font-bold text-lg text-text-hi">3. Contact Studio Support</h2>
+          <h2 className="font-serif font-bold text-lg text-slate-900">3. Contact Studio Support</h2>
           <p>
-            For shoot rescheduling or billing queries, contact our support team at <code>support@madco.in</code> or WhatsApp us at <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="text-brass hover:underline">+91 98765 43210</a>.
+            For shoot rescheduling or billing queries, contact our support team at <code>support@madco.in</code> or WhatsApp us at <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline font-semibold">+91 98765 43210</a>.
           </p>
         </section>
       </div>

@@ -1,23 +1,17 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Building2, Compass, ExternalLink } from 'lucide-react';
+import { EstatesLogo } from '@/components/estates-logo';
 
 export function Footer() {
   return (
-    <footer className="bg-ink-900 border-t border-line text-text-lo text-xs py-16">
+    <footer className="bg-[#0A0D14] border-t border-white/[0.08] text-slate-400 text-xs py-16 relative z-10">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Col 1: Brand & Studio Lockup */}
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
-            <Image 
-              src="/madco-logo.png" 
-              alt="Mad.co Estates 360 Spatial" 
-              width={200} 
-              height={60} 
-              className="w-auto h-10 lg:h-12 object-contain drop-shadow-md opacity-90"
-            />
+            <EstatesLogo />
           </div>
-          <p className="text-text-lo text-xs leading-relaxed">
+          <p className="text-slate-400 text-xs leading-relaxed">
             India's premiere 360° virtual walkthrough marketplace. Every listing is photographed room-to-room and verified in person by Mad.co Studio.
           </p>
           <div className="pt-2">
@@ -25,7 +19,7 @@ export function Footer() {
               href="https://madco.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-1.5 text-gold hover:underline font-semibold"
+              className="inline-flex items-center space-x-1.5 text-sky-400 hover:text-sky-300 hover:underline font-semibold transition"
             >
               <span>A Mad.co Studio product (madco.in)</span>
               <ExternalLink className="w-3 h-3" />
@@ -35,82 +29,84 @@ export function Footer() {
 
         {/* Col 2: Quick Links */}
         <div className="space-y-3">
-          <h4 className="font-serif font-bold text-text-hi uppercase tracking-wider text-xs">Explore Marketplace</h4>
+          <h4 className="font-display font-bold text-white uppercase tracking-wider text-xs">Explore Marketplace</h4>
           <ul className="space-y-2">
             <li>
-              <Link href="/property/luxury-2bhk-penthouse/tour" className="hover:text-text-hi transition">
+              <Link href="/property/luxury-2bhk-penthouse/tour" className="hover:text-sky-400 transition">
                 360° Virtual Walkthroughs
               </Link>
             </li>
             <li>
-              <Link href="/search" className="hover:text-text-hi transition">
+              <Link href="/search" className="hover:text-sky-400 transition">
                 Search Properties Nearby
               </Link>
             </li>
             <li>
-              <Link href="/owner/submit-property" className="hover:text-text-hi transition">
+              <Link href="/owner/submit-property" className="hover:text-sky-400 transition">
                 Book a 360° Capture Visit
               </Link>
             </li>
             <li>
-              <Link href="/admin/tour-builder/22222222-2222-2222-2222-222222222222" className="hover:text-text-hi transition">
+              <Link href="/admin/tour-builder/22222222-2222-2222-2222-222222222222" className="hover:text-sky-400 transition">
                 Visual Tour Builder
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 3: Popular Localities */}
+        {/* Col 3: Popular Cities */}
         <div className="space-y-3">
-          <h4 className="font-serif font-bold text-text-hi uppercase tracking-wider text-xs">Featured Metros</h4>
+          <h4 className="font-display font-bold text-white uppercase tracking-wider text-xs">Top Verified Localities</h4>
           <ul className="space-y-2">
             <li>
-              <Link href="/search?city=Mumbai" className="hover:text-text-hi transition">
-                Luxury Homes in Mumbai
+              <Link href="/search?city=Mangalore" className="hover:text-sky-400 transition">
+                Mangalore Prime Penthouses
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Bengaluru" className="hover:text-text-hi transition">
-                Villas in Bengaluru
+              <Link href="/search?city=Bangalore" className="hover:text-sky-400 transition">
+                Bangalore Luxury Villas
               </Link>
             </li>
             <li>
-              <Link href="/search" className="hover:text-text-hi transition">
-                Sea View Homes &amp; Penthouses
+              <Link href="/search?city=Mumbai" className="hover:text-sky-400 transition">
+                Mumbai Sea-View Suites
               </Link>
             </li>
             <li>
-              <Link href="/search?city=Delhi+NCR" className="hover:text-text-hi transition">
-                Penthouses in Delhi NCR
+              <Link href="/search?city=Goa" className="hover:text-sky-400 transition">
+                Goa Coastal Estates
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 4: Legal & Compliance */}
+        {/* Col 4: Trust & Policies */}
         <div className="space-y-3">
-          <h4 className="font-serif font-bold text-text-hi uppercase tracking-wider text-xs">Legal & Compliance</h4>
+          <h4 className="font-display font-bold text-white uppercase tracking-wider text-xs">Trust & Standards</h4>
           <ul className="space-y-2">
             <li>
-              <Link href="/terms" className="hover:text-text-hi transition">
-                Terms of Service & RERA Disclaimer
+              <Link href="/privacy" className="hover:text-sky-400 transition">
+                Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="hover:text-text-hi transition">
-                Privacy Policy & DPDP Act 2023
+              <Link href="/terms" className="hover:text-sky-400 transition">
+                Terms of Service
               </Link>
             </li>
             <li>
-              <Link href="/refund-policy" className="hover:text-text-hi transition">
-                Capture Shoot Refund Policy
+              <Link href="/refunds" className="hover:text-sky-400 transition">
+                Refund Policy
               </Link>
             </li>
           </ul>
-          <p className="text-[10px] text-slate-500 pt-2">
-            © 2026 Mad.co Estates. All rights reserved. Platform is a listing/marketing service (RERA Compliant).
-          </p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 mt-12 pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px] gap-4">
+        <p>© {new Date().getFullYear()} Madco Estates (estates.madco.in) — All Rights Reserved.</p>
+        <p className="font-mono">Spatial Real Estate Marketplace · Shot by Mad.co Studio</p>
       </div>
     </footer>
   );

@@ -50,21 +50,21 @@ export function LiveDemoSpotlight({ property: initialProperty }: LiveDemoSpotlig
     <section className="py-16 max-w-7xl mx-auto px-6 space-y-6">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <div className="inline-flex items-center space-x-2 text-gold text-xs font-bold uppercase tracking-widest font-mono mb-2 bg-gold/10 px-3 py-1 rounded-full border border-gold/30">
-            <Compass className="w-3.5 h-3.5 animate-pulse" />
+          <div className="inline-flex items-center space-x-2 text-sky-900 text-xs font-bold uppercase tracking-widest font-mono mb-2 bg-sky-100/90 px-3.5 py-1 rounded-full border border-sky-200/80 shadow-2xs">
+            <Compass className="w-3.5 h-3.5 text-sky-600 animate-spin-slow" />
             <span>LIVE INTERACTIVE DEMO SPOTLIGHT</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-text-hi">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900">
             Experience Spatial Walkthroughs Live
           </h2>
-          <p className="text-text-lo text-sm mt-1 max-w-2xl">
+          <p className="text-slate-600 text-sm mt-1 max-w-2xl">
             Interact directly with our verified spherical capture. Pan 360°, explore every angle, and see why physical visits become mere formalities.
           </p>
         </div>
 
         <Link
           href={`/property/${property.slug}/tour`}
-          className="btn-primary text-xs !py-3 !px-5 self-start md:self-auto flex items-center space-x-2"
+          className="btn-primary text-xs !py-3 !px-5 self-start md:self-auto flex items-center space-x-2 shadow-sm"
         >
           <Sparkles className="w-4 h-4" />
           <span>Launch Fullscreen 360° Tour</span>
@@ -73,32 +73,32 @@ export function LiveDemoSpotlight({ property: initialProperty }: LiveDemoSpotlig
       </div>
 
       {/* Main Showcase Card */}
-      <div className="bg-ink-900 border border-line rounded-3xl overflow-hidden shadow-2xl relative">
+      <div className="bg-white/95 backdrop-blur-xl border border-sky-200/70 rounded-3xl overflow-hidden shadow-luxury-lg relative">
         {/* Top Bar Navigation / Metadata */}
-        <div className="bg-ink-950/90 backdrop-blur-xl border-b border-line px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-sky-50/70 backdrop-blur-xl border-b border-sky-200/60 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-xs font-bold text-white">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-xs font-bold text-slate-900">
               {property.title}
             </span>
             {property.price === 0 ? (
-              <span className="text-xs font-mono text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/30">
+              <span className="text-xs font-mono text-sky-900 font-bold bg-sky-100 px-2 py-0.5 rounded-md border border-sky-200">
                 Price on Request
               </span>
             ) : (
-              <span className="text-xs font-mono text-gold font-bold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/30">
+              <span className="text-xs font-mono text-sky-900 font-bold bg-sky-100 px-2 py-0.5 rounded-md border border-sky-200">
                 ₹{(property.price / 10000000).toFixed(2)} Cr
               </span>
             )}
           </div>
 
-          <div className="flex items-center space-x-3 text-xs text-text-lo font-mono">
+          <div className="flex items-center space-x-3 text-xs text-slate-600 font-mono">
             <span className="flex items-center space-x-1">
-              <Building2 className="w-3.5 h-3.5 text-primary" />
+              <Building2 className="w-3.5 h-3.5 text-indigo-600" />
               <span>{property.bhk} BHK Suite</span>
             </span>
             <span className="hidden sm:flex items-center space-x-1">
-              <MapPin className="w-3.5 h-3.5 text-gold" />
+              <MapPin className="w-3.5 h-3.5 text-sky-600" />
               <span>{property.locality || property.city}</span>
             </span>
           </div>
@@ -129,21 +129,21 @@ export function LiveDemoSpotlight({ property: initialProperty }: LiveDemoSpotlig
 
           {/* Top Right Badge */}
           <div className="absolute top-4 right-4 z-20 pointer-events-auto">
-            <span className="badge-tour-verified text-[10px] sm:text-xs shadow-lg">
-              <Compass className="w-3.5 h-3.5 text-gold" />
+            <span className="badge-tour-verified text-[10px] sm:text-xs shadow-md">
+              <Compass className="w-3.5 h-3.5 text-sky-600 animate-spin-slow" />
               <span>360° VERIFIED BY MAD.CO STUDIO</span>
             </span>
           </div>
         </div>
 
         {/* Bottom Footer Actions */}
-        <div className="bg-ink-950/90 backdrop-blur-xl border-t border-line px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-          <span className="hidden sm:inline-flex text-xs text-text-lo bg-ink-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-line">
+        <div className="bg-sky-50/70 backdrop-blur-xl border-t border-sky-200/60 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+          <span className="hidden sm:inline-flex text-xs text-slate-600 bg-white px-3 py-1 rounded-full border border-sky-200/70 shadow-2xs">
             📍 {property.address}, {property.city}
           </span>
           <Link
             href={`/property/${property.slug}`}
-            className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-brass to-gold hover:from-brass-hover hover:to-gold-hover text-ink-950 font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition shadow-lg shadow-gold/20 hover:scale-[1.02] ml-auto"
+            className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition shadow-md shadow-sky-600/25 hover:scale-[1.02] ml-auto"
           >
             <Layers className="w-4 h-4" />
             <span>View Property Details &amp; Floorplan</span>
