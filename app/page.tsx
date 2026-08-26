@@ -30,7 +30,9 @@ export default async function HomePage() {
         .eq('key', 'hero_section')
         .single();
 
-      if (heroContent?.value?.heading) heroHeading = heroContent.value.heading;
+      if (heroContent?.value?.heading && !heroContent.value.heading.toLowerCase().includes('walk through luxury homes')) {
+        heroHeading = heroContent.value.heading;
+      }
       if (heroContent?.value?.subcopy) heroSubcopy = heroContent.value.subcopy;
     } catch (err) {
       console.warn('Could not fetch hero_section from site_content:', err);
